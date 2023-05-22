@@ -36,11 +36,11 @@ How you should think when you write the paper + things to include. They don't ne
 
 3) DAG: The DAG is an attempt to model the DGP that exists in nature. Draw some DAGs, make them simple, make them complex, experiment with cause and correlation.
 
-4.1) Identification Strategy: Control confounders, include other variables for precision, Colliders, etc...
+4) Relational Identification Strategy: Control confounders, include other variables for precision, Colliders, etc...
 
-4.2) Effect Identification Strategy: Fixes Effects, Matching, Propensity Scores, ATE, CATE, ITE, Difference in Differences... You should be explicit with what is being used/ observed.
+5) Effect Identification Strategy: Fixes Effects, Matching, Propensity Scores, ATE, CATE, ITE, Difference in Differences... You should be explicit with what is being used/ observed.
 
-5) Evaluation: Sensitivity Analysis, qualitative evaluation, parametric vs non-parametric models. 
+6) Evaluation: Sensitivity Analysis, qualitative evaluation, parametric vs non-parametric models. 
 
 
 
