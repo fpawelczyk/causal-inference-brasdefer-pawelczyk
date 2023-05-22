@@ -1,0 +1,85 @@
+---
+title: "Causal Inference Report: Review on Child Penalty Bla"
+author: 
+  - Juan Pablo Brasdefer 
+  - Fabian Pawelczyk
+date: "`r Sys.Date()`" 
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    fig_caption: true
+    highlight: tango
+    citation_package: natbib
+creative_commons: CC BY
+#preview: figures/BERTfig3.png
+#bibliography: bibliography.bib
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Load dependencies 
+library(reticulate) # For rendering Python code 
+library(distill)
+```
+
+# Abstract 
+
+Results between Logistic, XGBoost, and RandomForest models are assessed, with the RandomForest _(F1 = .67)_ proving
+strongest.
+
+
+
+<!--**Footnotes and Sidenotes**
+
+You can use footnotes ^[This is a footnote. You can view this by hovering over the footnote in text.] or sidenotes to elaborate on a concept throughout the paper. 
+
+<aside>
+This is a side note. 
+</aside> -->
+# Proposed Method 
+
+
+
+## Experiments 
+
+**Data**: This project utilized song data taken from directly
+from Spotify playlists. Every year, Spotify releases a *top-100 Songs* playlist for each of their customers that provides their most listened songs of that year. Playlists
+ranging from 2016 to 2021 were used for the three individuals in the group, and the playlists were chosen because they
+are the most efficient way of illustrating the music tastes of
+each individual. In order to pull this song data into Python,
+Spotipy was used. Spotipy is a lightweight Python library
+for the Spotify Web API. With Spotipy, you are able to gain
+full access to all of the music data provided by the Spotify
+platform.
+
+
+
+
+
+
+**Experimental details**: We decided to proceed with three
+different classification models to work with our newly created Spotify data that contained information on the three
+individuals. These were: Logistic Regression, XGBoost,
+and Random Forest. Each will be discussed in details in the
+following paragraphs.
+
+```{r fig4, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Random Forest parameters to test."}
+#knitr::include_graphics("figures/rf_para_test.png")
+```
+
+
+
+**Results**: As mentioned during the Experiment Details
+
+## Acknowledgments 
+
+One of our initial inspirations for this particular project
+came from Adam Reevesman’s article on Towards Data Science^[https://towardsdatascience.com/spotify-wrapped-data-visualization-and-machine-learning-on-your-top-songs-1d3f837a9b27]. It provided a framework for how Spotipy can be used
+to gather information about an individual’s song preferences
+and encouraged us to pursue this idea further. Additionally,
+the code he utilized to pull and clean the data from Spotify was essential in ensuring that we had a well structured data
+file to work with as we built out our three models.
