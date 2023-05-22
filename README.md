@@ -1,4 +1,7 @@
-# causal-inference-brasdefer-pawelczyk
+# Brasdefer, Pawelczyk Critique of Kleven et Al. 2019, Child Penalties
+
+
+
 
 ### Will's Instructions:
 1) Choose a paper; hopefully from another course.
@@ -23,7 +26,7 @@ Assume Will has read the paper.
 
 
 
-###Paulina's Tips
+### Paulina's Tips:
 
 How you should think when you write the paper + things to include. They don't need to be in this order, but there is some sense to thinking this way.
 
