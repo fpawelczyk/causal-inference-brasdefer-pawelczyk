@@ -11,28 +11,90 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r setup, include=FALSE}
+# load packages
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+```
+
 # Research project
 
-Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question
+Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question... I would frame it like an very short abstract (bc he said we should assume he read it). 
+Maybe add estimand here already instead of next section.
 
-<!--For international students, many programs offer a language camp in the weeks before students begin their graduate degrees, with the hope that it will help students be more prepared in some classes. You're interested in evaluating the effectiveness of a hypothetical language camp program. Does attending the camp cause higher grades in classes? This program is not randomized and it's not mandatory—anyone can decide to sign up (or not!), which means you have selection bias and confounding to worry about.-->
 
-So now what? 
+# Walk through the causal inference pipeline
 
-## Walk through the causal inference pipeline
-
-### First, what is the estimand? 
-<!--Have a clear idea of what it is that we want to measure.
-Maybe ask ourselves questions such as, is there literature that expects certain effects?
-Are there results out there that surprised me? 
-or maybe this is more of an exploratory analysis phase, and you can list the estimands that could be of interest. -->
+# First, what is the estimand? 
+<!--Have a clear idea of what it is that we want to measure.-->
 
 The estimand: Impact of children on the labour market outcomes of women relative to men. _I wonder whether labor market outcomes is precise or earnings are better_
 Research gap: most research sheds light into local effect of a second or third chilf but they cannot provide estiamtes of the total effect of children and especially the first child
 
+```{r}
+# The estimand as a DAG
+estimand_dag <- dagify(earnings ~ birth_having_child,
+                        outcome = "earnings",
+                        exposure = "birth_having_child",
+                        coords = list(x = c(birth_having_child = 1, earnings = 2),
+                                      y = c(birth_having_child = 1, earnings = 1)))
+
+ggdag_status(estimand_dag) +
+  theme_dag() +
+  guides(color = "none")  # Turn off legend
+```
+
+```{r}
+# Define the DAG
+dag <- dagitty( 'dag {
+  "Birth" [exposure,pos="0,0"]
+  "Earnings" [outcome,pos="2,0"]
+  "Extensive" [mediator,pos="1,1"]
+  "Intensive" [mediator,pos="1,0"]
+  "w" [mediator,pos="1,-1"]
+  "Birth" -> "Extensive" 
+  "Birth" -> "Intensive"
+  "Birth" -> "w"
+  "Extensive" -> "Earnings"
+  "Intensive" -> "Earnings"
+  "w" -> "Earnings"
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")
+```
+
+```{r}
+# Define the DAG
+dag1 <- dagitty( 'dag {
+  "Birth" [exposure,pos="0,0"]
+  "Earnings" [outcome,pos="2,0"]
+  "Extensive" [mediator,pos="1,1"]
+  "Intensive" [mediator,pos="1,0"]
+  "w" [mediator,pos="1,-1"]
+  "Transfers/Benefits" [mediator,pos="1,-2"]
+  "Birth" -> "Extensive" 
+  "Birth" -> "Intensive"
+  "Birth" -> "w"
+  "Birth" -> "Transfers/Benefits"
+  "Extensive" -> "Earnings"
+  "Intensive" -> "Earnings"
+  "w" -> "Earnings"
+  "Transfers/Benefits" -> "Earnings"
+}' )
+# Print the DAG
+ggdag_status(dag1) +
+  theme_dag() +
+  guides(color = "none")
+```
+
 ### Second, thinking about the data
 <!--How will I gather data?
 Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
+What kind of data do we have? How was the data gathered?
 
 ### Three, contemplaiting the data generation process
 Draw out the DAG that you consider best explains the data generation process. 
@@ -40,12 +102,17 @@ Draw out the DAG that you consider best explains the data generation process.
 ### Fourth, Identification strategy!
 Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
 
-### Fourth continued, Effect identification strategy!
+
+# Fourth continued, Effect identification strategy!
 Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we're all good? 
 ATE? CATE? ITE?
 
-### Finaly, Evaluate
-Should we run a sensitivity analysis?
+
+
+# Evaluate
+## How can we improve the research? 
+## Does it make sense how they did it?
+
 
 ### Where to put the section on method? 
 Regression, event study
@@ -71,10 +138,6 @@ Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`.
 We'll think about a DAG with just four nodes. 
 
 ```{r}
-library(dagitty)
-library(ggdag)
-library(ggplot2)
-
 language_camp_dag <- dagify(grade ~ camp + gpa + gre,
                         camp ~ gpa + gre,
                         gre ~ gpa,
