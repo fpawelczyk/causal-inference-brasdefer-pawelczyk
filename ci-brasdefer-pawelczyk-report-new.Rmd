@@ -13,21 +13,26 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Research project
 
-For international students, many programs offer a language camp in the weeks before students begin their graduate degrees, with the hope that it will help students be more prepared in some classes. You're interested in evaluating the effectiveness of a hypothetical language camp program. Does attending the camp cause higher grades in classes? This program is not randomized and it's not mandatory—anyone can decide to sign up (or not!), which means you have selection bias and confounding to worry about.
+Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question
+
+<!--For international students, many programs offer a language camp in the weeks before students begin their graduate degrees, with the hope that it will help students be more prepared in some classes. You're interested in evaluating the effectiveness of a hypothetical language camp program. Does attending the camp cause higher grades in classes? This program is not randomized and it's not mandatory—anyone can decide to sign up (or not!), which means you have selection bias and confounding to worry about.-->
 
 So now what? 
 
 ## Walk through the causal inference pipeline
 
 ### First, what is the estimand? 
-Have a clear idea of what it is that we want to measure.
+<!--Have a clear idea of what it is that we want to measure.
 Maybe ask ourselves questions such as, is there literature that expects certain effects?
 Are there results out there that surprised me? 
-or maybe this is more of an exploratory analysis phase, and you can list the estimands that could be of interest.
+or maybe this is more of an exploratory analysis phase, and you can list the estimands that could be of interest. -->
+
+The estimand: Impact of children on the labour market outcomes of women relative to men. _I wonder whether labor market outcomes is precise or earnings are better_
+Research gap: most research sheds light into local effect of a second or third chilf but they cannot provide estiamtes of the total effect of children and especially the first child
 
 ### Second, thinking about the data
-How will I gather data?
-Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? 
+<!--How will I gather data?
+Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
 
 ### Three, contemplaiting the data generation process
 Draw out the DAG that you consider best explains the data generation process. 
@@ -42,7 +47,9 @@ ATE? CATE? ITE?
 ### Finaly, Evaluate
 Should we run a sensitivity analysis?
 
-
+### Where to put the section on method? 
+Regression, event study
+"To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time."
 
 
 ## Ok let's give it a go
