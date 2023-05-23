@@ -1,0 +1,209 @@
+---
+title: "Causal Inference Report: Review on Child Penalty Bla"
+author: 
+  - Juan Pablo Brasdefer 
+  - Fabian Pawelczyk
+date: "`r Sys.Date()`" 
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+# load packages
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+```
+
+# Research project
+
+Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question... I would frame it like an very short abstract (bc he said we should assume he read it). 
+Maybe add estimand here already instead of next section.
+
+
+# Walk through the causal inference pipeline
+
+# First, what is the estimand? 
+<!--Have a clear idea of what it is that we want to measure.-->
+
+The estimand: Impact of children on the labour market outcomes of women relative to men. _I wonder whether labor market outcomes is precise or earnings are better_
+Research gap: most research sheds light into local effect of a second or third chilf but they cannot provide estiamtes of the total effect of children and especially the first child
+
+```{r}
+# The estimand as a DAG
+estimand_dag <- dagify(earnings ~ birth_having_child,
+                        outcome = "earnings",
+                        exposure = "birth_having_child",
+                        coords = list(x = c(birth_having_child = 1, earnings = 2),
+                                      y = c(birth_having_child = 1, earnings = 1)))
+
+ggdag_status(estimand_dag) +
+  theme_dag() +
+  guides(color = "none")  # Turn off legend
+```
+
+```{r}
+# Define the DAG
+dag <- dagitty( 'dag {
+  "Birth" [exposure,pos="0,0"]
+  "Earnings" [outcome,pos="2,0"]
+  "Extensive" [mediator,pos="1,1"]
+  "Intensive" [mediator,pos="1,0"]
+  "w" [mediator,pos="1,-1"]
+  "Birth" -> "Extensive" 
+  "Birth" -> "Intensive"
+  "Birth" -> "w"
+  "Extensive" -> "Earnings"
+  "Intensive" -> "Earnings"
+  "w" -> "Earnings"
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")
+```
+
+```{r}
+# Define the DAG
+dag1 <- dagitty( 'dag {
+  "Birth" [exposure,pos="0,0"]
+  "Earnings" [outcome,pos="2,0"]
+  "Extensive" [mediator,pos="1,1"]
+  "Intensive" [mediator,pos="1,0"]
+  "w" [mediator,pos="1,-1"]
+  "Transfers/Benefits" [mediator,pos="1,-2"]
+  "Birth" -> "Extensive" 
+  "Birth" -> "Intensive"
+  "Birth" -> "w"
+  "Birth" -> "Transfers/Benefits"
+  "Extensive" -> "Earnings"
+  "Intensive" -> "Earnings"
+  "w" -> "Earnings"
+  "Transfers/Benefits" -> "Earnings"
+}' )
+# Print the DAG
+ggdag_status(dag1) +
+  theme_dag() +
+  guides(color = "none")
+```
+$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
+$$
+
+```{math}
+\begin{equation}
+Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
+\end{equation}
+
+
+
+### Second, thinking about the data
+<!--How will I gather data?
+Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
+What kind of data do we have? How was the data gathered?
+
+### Three, contemplaiting the data generation process
+Draw out the DAG that you consider best explains the data generation process. 
+
+### Fourth, Identification strategy!
+Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
+
+
+# Fourth continued, Effect identification strategy!
+Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we're all good? 
+ATE? CATE? ITE?
+
+
+
+# Evaluate
+## How can we improve the research? 
+## Does it make sense how they did it?
+
+
+### Where to put the section on method? 
+Regression, event study
+"To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time."
+
+From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
+opt for family-friendly career tracks knowing that they will eventually have many children.
+While we do not specify the demand for children, we make the assumption that children kit are
+exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
+
+
+## Ok let's give it a go
+
+**Step 1**
+
+Estimand. The effect of `treatment` on `outcome`. 
+
+**Step 2**
+Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`. 
+
+**Step 3: DAG**
+
+We'll think about a DAG with just four nodes. 
+
+```{r}
+language_camp_dag <- dagify(grade ~ camp + gpa + gre,
+                        camp ~ gpa + gre,
+                        gre ~ gpa,
+                        outcome = "grade",
+                        exposure = "camp",
+                        coords = list(x = c(camp = 1, gpa = 2, gre = 3, grade = 4),
+                                      y = c(camp = 1, gpa = 2, gre = 2, grade = 1)))
+
+ggdag_status(language_camp_dag) +
+  theme_dag() +
+  guides(color = "none")  # Turn off legend
+```
+
+**Part 4**
+
+Students' GRE scores and undergraduate GPAs confound both the choice to enroll in the camp and final class grades. Additionally, undergraduate degrees help cause GRE scores.
+
+*We will generate syntetic data for this example*
+
+```{r}
+
+library(scales)
+
+# 1. GPA is associated with GRE scores
+# 2. Camp (binary) is associated with undergraduate GPA and GRE scores. Calculate a camp score and then a camp binary variable from it. 
+# 3. Final grade is caused by language camp, undergraduate GPA, and GRE scores
+
+gpa <- rnorm(100, mean = 2.5,sd = 1.5)
+e_gre <- rnorm(100, mean = 5, sd = 5)
+gre <- 140 + gpa*10 + e_gre
+gre_r<-rescale(gre, to = c(100, 170))
+
+e_camp_score <- rnorm(100, mean= 50, sd= 20)
+camp_score <- e_camp_score + 5*gpa + gre_r/5
+camp_score_r <- rescale(camp_score, to = c(0, 100))
+
+```
+
+**More part 4: Specify how these nodes are measured**
+
+See if you can find the effect. Run two models:
+
+- `grade ~ camp`: This is the naive, unadjusted, correlation-is-not-causation estimate. It's wrong.
+
+- `grade ~ camp + gpa + gre`: This is the adjusted estimate. 
+
+(Also adjust for GPA and GRE with inverse probability weighting to see if the ATE for `camp` still holds. This is entirely optional.)
+
+```{r}
+# Specify the models 
+
+# lm( ~ )
+
+```
+
+ATE = 
+
+**Part 5**
+
+Evaluation
