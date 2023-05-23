@@ -11,7 +11,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 # load packages
 library(dagitty)
 library(ggdag)
@@ -90,6 +90,15 @@ ggdag_status(dag1) +
   theme_dag() +
   guides(color = "none")
 ```
+$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
+$$
+
+```{math}
+\begin{equation}
+Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
+\end{equation}
+
+
 
 ### Second, thinking about the data
 <!--How will I gather data?

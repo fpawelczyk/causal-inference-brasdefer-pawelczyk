@@ -8,7 +8,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
 # Research project
+
+$$Y_gist = ∑_(j≠-1) α_gj · I[j = t] + ∑_k β_gk · I[k = ageis] + ∑_y γ_gy · I[y = s] + ν_gist$$
 
 For international students, many programs offer a language camp in the weeks before students begin their graduate degrees, with the hope that it will help students be more prepared in some classes. You're interested in evaluating the effectiveness of a hypothetical language camp program. Does attending the camp cause higher grades in classes? This program is not randomized and it's not mandatory—anyone can decide to sign up (or not!), which means you have selection bias and confounding to worry about.
 
