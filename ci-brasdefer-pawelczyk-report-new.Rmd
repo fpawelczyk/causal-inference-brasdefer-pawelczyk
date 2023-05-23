@@ -51,6 +51,11 @@ Should we run a sensitivity analysis?
 Regression, event study
 "To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time."
 
+From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
+opt for family-friendly career tracks knowing that they will eventually have many children.
+While we do not specify the demand for children, we make the assumption that children kit are
+exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
+
 
 ## Ok let's give it a go
 
