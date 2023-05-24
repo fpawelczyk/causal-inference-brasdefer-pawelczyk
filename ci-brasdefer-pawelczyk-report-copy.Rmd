@@ -90,20 +90,145 @@ ggdag_status(dag1) +
   theme_dag() +
   guides(color = "none")
 ```
-$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
-$$
+
+
+
+# Second, thinking about the data
+For the remainder of the Data, Methods, and Identification sections, it is important to note that this paper bases its approach on a previous paper by Kleven et al. from 2018. Data collections is dissimilar, but the approaches and statistical formulations are the same. Important distinctions between the two will be made clear as they arise.
+
+The study conducted in the 2019 paper (the paper which we are focusing on) works as a form of Natural Experiment, as the births and decisions around work occur have occurred in the natural world. Data for Austria, Denmark, and Sweden is taken from administrative registers that hold data for the full population, while Germany, the US, and the UK use surveys with sufficiently large sample sizes and long time series. 
+Though the authors highlight the fact that "the ideal experiment for the estimand would be to randomize fertility", the study has several key aspects that work positively for it as a Natural Experiment.
+
+First, there is exogenous assignment of treatment, meaning that assignment is not  subject to manipulation. Childbirth occurs naturally, though it is important to note that the authors chose to ONLY include treated individuals (child = true) in the study, and develop counterfactuals statistically instead of as natural data points. This is further explored in a following section.
+
+Second, data collection for purposes of the survey takes place after the data itself has been generated, meaning that there is no opportunity for the researchers to influence the data or response of individuals.
+
+Third, confounder bias is largely made negligible by the pool of data. Something could be said about participation bias when it comes to those who do and do not answer surveys, but the authors do not see this as a hindrance, given a very big sample size and frequent data.
+
+
+
+
+
+
+
+
+
+
+# Methods
+
+# Event Study 
+The paper follows an Event Study framework.
+
+With regards to choosing Event Study as the study design, the authors recognize that, "although fertility choices are not exogenous", the effects of having a first child create changes in labour market outcomes (both extensive and intensive) that are "arguably orthogonal to unobserved determinants of those outcomes", as we expect these to evolve smoothly over time.
+
+Thus, this event study relies on the Smoothness Assumption, specifically for identifying the short-run effects. The smoothness assumption tells us that the events happen in a continuous manner without abrupt jumps or discontinuities.
+
+The precise event in question is the birth of the first child, around which time 't' is centered. The Event Window extends backwards 5 years and forward 10 so that t = (-5,-4...0...9,10) denotes the distance from the event. The birth of the child for individual 'i' is independent of other time or age measurements and the births of other children. One thing to note is that t = -1 is not included in measurements, as it incorporates the effects of pregnancy on a woman that men do not experience. 
+
+
+
+
+//maybe put this stuff in another section//
+The short-run penalty is estimated by comparing event times just before (t-) and just after (t+) the event. The EQUATION BELOW shoes this effect.
+
+
+Where Y denotes... K denotes... X denotes... Z denotes...
+This equation is able to capture the short-run penalty, even if Zit is not conditioned on (ie: non-inclusion of age and year dummies) because of the smoothness assumption. Said differently, if we looked at people who did not have children, their Yit+ and Yit- would be approximately equal.
+
+However, the smoothness assumption falls apart for long-run effects, and so controlling for zit allows us to not worry. If we were to not fully control for zit, the long-run child penalty would turn out to be a very biased estimate. 
+
+
+
+
+
+
+
+
+
+FABIAN WRITINGS
+
+
+From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
+opt for family-friendly career tracks knowing that they will eventually have many children.
+While we do not specify the demand for children, we make the assumption that children kit are
+exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
+
+
+
+
+
+
+# Regression
+The central equation of the study is a regression equation, with output variable Y corresponding to 'Earnings', and is calculated separately for men and women, resulting in two Y outcomes. The equation is shown below.
+
+
+$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} $$
+
+In terms of notation, g denotes gender (separate regression for m/f), i denotes the individual, s the year (1986, 2002...), and t the event-time (-5, 2...). 
+
+The equation has three dummy terms (functioning through an Indicator) and an error term. 
+The first dummy term deals with the 'event-time', which is to say that it captures the coefficient for distance from the birth of the child. 
+The second dummy is the 'age' dummy, and helps us control for underlying life-cycle trends that occur at different points of an individual's life, such as entering the workforce or leaving it. Age is also important to include because it allows us to control for the fact that men and women have children at different times. 
+The final dummy is the 'year' dummy, and helps us control for time trends such as economic recessions, inflation trends, and world events that may interfere with our outcome.
+
+If the age and year dummies were not oncluded, the estimated event coefficient ALPHA HAT would give us the mean value of the outcome at event time, relative to t = -1.
+
+
+Using the separate Ym and Yw, the Estimated Level Effect of equation 1 is converted to a percentage by using a counterfactual model. In practice, this counterfactual is simply the original regression excluding the event-time variable. Effectively, the counterfactual is the same outcome "absent children".
+
+$$\tilde{Y}^{g}_{\text{ist}} = \sum_k \hat{\beta}^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \hat{\gamma}^{g}_{y} \cdot I[y = s]  $$
+
+The authors then take this setup and subtract the women's penalty from the men's and divide the result by the expected value of the counterfactual given t in order to find "The Child Penalty on Women, Relative to Men, at event time t".
+
+
+PT EQUATION OF M-W
+
+
+Once again, very short-run penalties such as P0, P1, or P2 rely on the smoothness assumption, but longer term penalties such as P20 would require much stronger assumptions (which can make replicability/ generalization difficult), or a defined control group. 
+
+
+
+
+# Identification Strategy 1: Conceptual Framework
+The authors formulate the relationship between variables in what they call the "Conceptual Framework". 
+Parallel to the causal relationships outlined in the initial DAGs above, these relationships are a more general view of how earnings fluctuations are constructed.
+
+They beging this formulation by establishing some precision around the idea of the 'event' and how it relates to the total number of children that an individual will have over their lifetime.
+
+The authors assign a variable, 'k' that corresponds to a number of children. ki, for individual 'i', is thus labelled the "anticipated lifetime fertility path" for one person, and is made up of values:
+
+$$ k_{i} = (0, k_{it}, ...k_{iT})$$
+Where the value of ki at any point t is the number of children of the individual, ending with kiT which denotes the total children over the individual's lifetime. An important thing to note here is that, the authors DO NOT discriminate individuals based on the number of children had after the first. In other words, there are, conceivably, data points with event-time t greater than 1 that have underlying children values also great than 1. This means that the medium-to-long-run penalties (P5,...P10) also include the effect of having more children beyond the firstborn, and so have the potential of capturing the total effect of children on gender-based earning inequalities.
+
+The authors begin with the base equation below, which outlines that Earnings 'Y' for individual 'i' at 't' are a function of the number of children at time 't' and choices around the extensive and intensive margins of labour participation. 
+
+
+$$Y_{it} = F(k_{it}, x_{it}, z_{it})$$
+$$      = F(k_{it},x(k_{it},k_i,z_{it}),z_{it})$$ 
+
+
+# Identification Strategy 2: Difference in Differences
+The first identifi- cation check is a difference-in-differences (DD) event study design in which we compare those who have children to those who never have children. This design is based on assigning placebo births to individuals who never have children, drawing from the observed distribution of age at first child among those who do have chil- dren. 
+
+
+
+
 
 ```{math}
+
+
+
+
 \begin{equation}
 Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
 \end{equation}
 
 
-
-### Second, thinking about the data
-<!--How will I gather data?
-Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
-What kind of data do we have? How was the data gathered?
+  
+  
+  
+  
+  
 
 ### Three, contemplaiting the data generation process
 Draw out the DAG that you consider best explains the data generation process. 
@@ -123,14 +248,7 @@ ATE? CATE? ITE?
 ## Does it make sense how they did it?
 
 
-### Where to put the section on method? 
-Regression, event study
-"To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time."
 
-From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
-opt for family-friendly career tracks knowing that they will eventually have many children.
-While we do not specify the demand for children, we make the assumption that children kit are
-exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
 
 
 ## Ok let's give it a go
@@ -138,7 +256,6 @@ exogenous to the outcome variable Yit conditional on the set of underlying deter
 **Step 1**
 
 Estimand. The effect of `treatment` on `outcome`. 
-
 **Step 2**
 Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`. 
 
