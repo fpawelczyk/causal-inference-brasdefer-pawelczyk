@@ -1,54 +1,62 @@
 ---
-title: "Causal Inference Report: Review on Child Penalty Bla"
+title: "Causal Inference Report: Review on Child Penalties Across Countries: Evidence and Explanations"
 author: 
   - Juan Pablo Brasdefer 
   - Fabian Pawelczyk
 date: "`r Sys.Date()`" 
-output: html_document
+output:
+   bookdown::html_document2:
+      fig_caption: yes
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE, include=F}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, include=FALSE}
+
+```{r, echo=FALSE, include=F}
 # load packages
 library(dagitty)
 library(ggdag)
 library(ggplot2)
 library(cowplot)
 library(knitr)
+library(bookdown)
 ```
 
-# Research project
-According to the DAG shown in Figure \@ref(fig:dag_plot), there is a causal relationship between the variable "birth_having_child" and "earnings."
-\@ref(tab:dag_plot)
+# Abstract
+<!--According to the DAG shown in Figure XXX, there is a causal relationship between the variable "birth_having_child" and "earnings." -->
 
+The paper we analyzed examines the influence of having children on the gross labor earnings of both mothers and fathers (the estimand). Specifically, it delves into the _child penalty_ - a phenomenon referring to the potential decrease in earnings experienced by individuals, particularly women, upon becoming parents. This 'penalty' essentially represents the earnings disparity between those with children and those without.
 
-This paper meticulously examines the influence of having children on the gross labor earnings of both mothers and fathers (the estimand). Specifically, it delves into the _child penalty_ - a phenomenon referring to the potential decrease in earnings experienced by individuals, particularly women, upon becoming parents. This 'penalty' essentially represents the earnings disparity between those with children and those without.
+The authors aim to contribute to the extensive literature on gender inequality by applying an _event study methodology_, with the birth of the first child serving as the central event. Utilizing a rich panel dataset that provides information on labor market outcomes and children, the authors navigate through the complex dynamics of parenthood and earnings, aiming to shed light on how gender inequality in earnings might be perpetuated by the advent of parenthood.
 
-The authors aim to contribute to the extensive literature on gender inequality by applying an event study methodology, with the birth of the first child serving as the central event. Utilizing a rich panel dataset that provides information on labor market outcomes and children, the authors navigate through the complex dynamics of parenthood and earnings, aiming to shed light on how gender inequality in earnings might be perpetuated by the advent of parenthood.
+# Basic DAG's to illustrate the causal pipeline
 
-# DAG and extension
+In Figure X, we introduce a fundamental Directed Acyclic Graph , which illustrates the estimand in the simplest manner. However, it's essential to acknowledge that this model offers a simplified representation in two ways:
 
-We present the baseline DAG in Figure X where the estimand is shown in the most simplest way.
-However, the authors admit that earning penalties can come from three margins, nameley: the extensive margin of labor supply (employment), the intensive margin of labor supply (hours worked) and finally the wage rate (denoted by _w_). We include this into a new DAG (Figure X) to make clear that that the earnings consist of different parts.
-\@ref(fig:dag_plot)
+a) The use of panel data introduces a temporal component to the data, which isn't explicitly depicted in this model.
 
-```{r dag_plot}
-# The estimand as a DAG
-estimand_dag <- dagify(earnings ~ birth_having_child,
-                        outcome = "earnings",
-                        exposure = "birth_having_child",
-                        coords = list(x = c(birth_having_child = 1, earnings = 2),
-                                      y = c(birth_having_child = 1, earnings = 1)))
+b) The authors also clarify that earnings penalties may stem from three distinct labor supply margins: the extensive margin (employment, abbreviated as `Emp`), the intensive margin (hours worked, abbreviated as `HW`), and the wage rate (denoted by `w`).
 
+To better represent the nuanced composition of earnings, we incorporate these components into a new DAG (Figure X). This adaptation provides a clearer visualization of the multiple elements contributing to earnings.
+
+```{r, echo=FALSE, fig.cap="\\label{fig:figs}DAG  showing the simplified relationship between having a First Child (FC) and Earnings (E). This model is a simplification, and the effects of additional children are also captured in the analysis.", out.width= "100%", fig.align='center'}
+# Define the estimand as a DAG
+estimand_dag <- dagify(E ~ FC,
+                       outcome = "E",
+                       exposure = "FC",
+                       coords = list(x = c(FC = 1, E = 2),
+                                     y = c(FC = 1, E = 1)))
+
+# Draw the DAG
 ggdag_status(estimand_dag) +
   theme_dag() +
   guides(color = "none")  # Turn off legend
+
 ```
 
-```{r}
+```{r, echo=FALSE, fig.cap="DAG  showing the hypothesized relationships between having a First Child (FC), Employment (Emp), Hours Worked (HW), Wage (W), and Earnings (E). This model is a simplification, and the effects of additional children and other potential confounding factors are also captured in the analysis.", out.width= "100%", fig.align='center'}
 # Define the DAG
 # Defining abbreviations for our variables
 # FC: First Child (exposure variable, representing the birth of the first child)
@@ -75,10 +83,11 @@ dag <- dagitty( 'dag {
 ggdag_status(dag) +
   theme_dag() +
   guides(color = "none")  # Suppress the legend
-
-
 ```
-```{r}
+
+# HERE JPS SECTION ALSO USING THE DAG's
+
+```{r, echo=FALSE, fig.cap="DAG  showing the hypothesized relationships between having a First Child (FC), Labor Supply (LS), Life-Cycle Trends (LCT), Time Trends (TT), and Earnings (E). LS represents the combined effect of employment status, hours worked, and wage. LCT and TT are confounders that are controlled for in the analysis. This model is a simplification, and the effects of additional children are also captured in the analysis.", out.width= "100%", fig.align='center'}
 # Define the DAG
 # FC: First Child (exposure variable, representing the birth of the first child)
 # E: Earnings (outcome variable, representing labor market outcomes)
@@ -106,45 +115,10 @@ dag <- dagitty( 'dag {
 ggdag_status(dag) +
   theme_dag() +
   guides(color = "none")  # Suppress the legend
-
-
 ```
 
 
-```{r}
-# Define the DAG
-# Defining abbreviations for our variables
-# FC: First Child (exposure variable, representing the birth of the first child)
-# E: Earnings (outcome variable, representing labor market outcomes)
-# Emp: Employment (mediator variable, representing employment status)
-# HW: Hours Worked (mediator variable, representing hours worked)
-# W: Wage (mediator variable, representing wage)
-
-dag <- dagitty( 'dag {
-  "FC" [exposure,pos="0,0"]
-  "E" [outcome,pos="2,0"]
-  "Emp" [mediator,pos="1,1"]
-  "HW" [mediator,pos="1,0"]
-  "W" [mediator,pos="1,-1"]
-  "FC" -> "Emp" 
-  "FC" -> "HW"
-  "FC" -> "W"
-  "Emp" -> "E"
-  "HW" -> "E"
-  "W" -> "E"
-}' )
-
-# Print the DAG
-ggdag_status(dag) +
-  theme_dag() +
-  guides(color = "none")  # Suppress the legend
-
-
-```
-
-
-
-```{r dag5, fig.cap= "This is DAG 5", out.width= "100%", fig.align='center'}
+```{r dag5, fig.cap= "Figure X: This DAG  outlines the causal relationships between the birth of the first child (FC), labor supply (LS), and earnings (E). The labor supply (LS) is a mediator variable that encapsulates the combined influence of employment status, hours worked, and wage rate. Notably, the model controls for Time Trends (TT) and Life-Cycle Trends (LCT), which are recognized confounders in this context. In this simplified representation, no direct links are drawn from TT and LCT to the other variables, reflecting the control for these confounders in the statistical model.", out.width= "100%", fig.align='center', echo=FALSE}
 # Define the DAG
 # FC: First Child (exposure variable, representing the birth of the first child)
 # E: Earnings (outcome variable, representing labor market outcomes)
@@ -176,66 +150,14 @@ Overall, the paper focuses on estimating the impact of having children on labor 
 
 We will use the term _child penalty_ throughout the report which is a common term in the literature and points towards the lower projected earnings of mothers compared to fathers. However, while this term suggests that women do not voluntarily choose positions that have valuable family amentiies (but lower wages) we do not want to suggest that this causal explaination is final as we discuss in the last section.-->
 
-# Walk through the causal inference pipeline
-
-# First, what is the estimand? 
-<!--Have a clear idea of what it is that we want to measure.-->
-The estimand: Impact of children on the earnings of women relative to men.
-Then let's ref this shit `\ref(fig:dag5)`
-
-
-
-```{r}
-
-
-
-# Define the DAG
-# Defining abbreviations for our variables
-# FC: First Child (exposure variable, representing the birth of the first child)
-# E: Earnings (outcome variable, representing labor market outcomes)
-# Emp: Employment (mediator variable, representing employment status)
-# HW: Hours Worked (mediator variable, representing hours worked)
-# W: Wage (mediator variable, representing wage)
-# EB: Employer Benefits
-
-dag <- dagitty( 'dag {
-  "FC" [exposure,pos="0,0"]
-  "E" [outcome,pos="2,0"]
-  "Emp" [mediator,pos="1,1"]
-  "HW" [mediator,pos="1,0"]
-  "W" [mediator,pos="1,-1"]
-  "EB" [mediator, pos="1,-2"]
-  "FC" -> "Emp" 
-  "FC" -> "HW"
-  "FC" -> "W"
-  "FC" -> "EB"
-  "Emp" -> "E"
-  "HW" -> "E"
-  "W" -> "E"
-  "EB" -> "E"
-}' )
-
-# Print the DAG
-ggdag_status(dag) +
-  theme_dag() +
-  guides(color = "none")  # Suppress the legend
-
-```
 $$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
 $$
 
 
 
-### Second, thinking about the data
+<!--### Second, thinking about the data
 <!--How will I gather data?
 Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
-What kind of data do we have? How was the data gathered?
-
-### Three, contemplaiting the data generation process
-Draw out the DAG that you consider best explains the data generation process. 
-
-### Fourth, Identification strategy!
-Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
 
 
 # Advanced identification strategy: DID and IV variables
@@ -246,7 +168,7 @@ To validate whether the authors identification strategy is valid the authors run
 
 In this identification check, the authors propose a variation of their event study approach by introducing an Instrumental Variable (IV) strategy. They use the gender composition of the first two children as an instrument for having a third child, following the reasoning that parents with two same-sex children are more likely to have a third child. The validity of this instrument relies on the assumption that the sex of the first two children doesn't independently impact labor market outcomes (the exclusion restriction).
 
-The authors modify their event study specification to estimate the Local Average Treatment Effect (LATE) of having a third child. This means they are focusing on the subpopulation influenced by the instrument (the "compliers"). The model is defined as:
+The authors modify their event study specification to estimate the Local Average Treatment Effect (LATE) of having a third child in order to compare it with the IV approach. This means they are focusing on the subpopulation influenced by the instrument (the "compliers"). For the interested reader we created a DAG to visualize this IV approach (see Figure X).
 
 To facilitate a valid comparison, the authors modify their event study model as follows:
 
@@ -259,13 +181,13 @@ The IV specification is identical, except it includes an additional instrumentin
 
 $$I[n = t'] = I[n = t'] * I[same sex siblings]$$
 
-In other words, I[n = t'] takes the value of one when the woman is at event time t' (previous t0) with respect to the third child and her first two children are of the same sex.
+In other words, $I[n = t']$ takes the value of one when the woman is at event time t' with respect to the third child and her first two children are of the same sex.
 
-The counterfactual outcome, denoted $\tilde{Y}^w_{istt'}$, is calculated excluding the effect of the third child but including the effects of the first child and other controls. It represents the expected labour market outcome for a woman if she did not have a third child, providing a baseline against which to compare the actual outcomes of those who did have a third child.
+Following the logic from the baseline model the counterfactual outcome, denoted $\tilde{Y}^w_{istt'}$, is calculated excluding the effect of the third child but including the effects of the first child and other controls. It represents the expected labour market outcome for a woman if she did not have a third child, providing a baseline against which to compare the actual outcomes of those who did have a third child.
 
 The findings suggest that the event study and IV estimates align closely, indicating robustness in their empirical approach. The short-run effect of the third child is similar to that of the first, showing an earnings reduction of 20-30%. However, the long-run effect of a third child is about 5%, lower than the long-run effect of the first child for those who only have one child, suggesting a diminishing marginal effect with the addition of more children.
 
-```{r}
+```{r, echo=FALSE}
 # Define the DAG
 # Define a simple DAG
 dag_text <- '
@@ -290,7 +212,7 @@ LifeCycleTrends -> LaborMarketOutcome
 
 ```
 
-```{r}
+```{r, echo=FALSE, fig.cap= "Note: This DAG represents a way to think about the aforementioned IV approach. T3 denotes the timing of the third child that is instrumentalized through the sex composition (SC). Also, to get rid of the confunders LC and TT the authors are controlling for it. E - Earnings, T1 - First Child, T2 - Second Child, T3 - Third Child, SC - Sex Composition, TT - Time Trends, LC - Life Cycle Trends", out.width= "100%", fig.align='center'}
 
 
 
@@ -312,108 +234,78 @@ third_child_dag <- dagify(E ~ T1 + T2 + T3 + TT + LC,
                                         y = c(T1 = 2, T2 = 2, T3 = 2, SC = 3, TT = 3, LC = 1, E = 2)))
 
 # Draw the DAG
-dag_plot <- ggdag_status(third_child_dag) +
+ggdag_status(third_child_dag) +
   theme_dag() +
   guides(color = "none")  # Turn off legend
 
-# Add a title and caption
-dag_plot +
-  ggtitle("Directed Acyclic Graph (DAG) for the Third Child Study") +
-  labs(caption = "Note: E - LaborMarketOutcome, T1 - FirstChild, T2 - SecondChild, T3 - ThirdChild, SC - SexComposition, TT - TimeTrends, LC - LifeCycleTrends")
+
 
 
 
 ```
 
+# Critics
+
+While the authors are able to identify a causal effect and have a rather strong methodological foundation
+there are still some things one can discuss.
+
+## Comparision among countries and different sources of earnings
+
+A criticism, not entirely attributable to the measurement process itself but nonetheless significant when contrasting the metrics across different countries, pertains to variations in parental leave benefits. As the authors' selected earnings measure incorporates any non-statutory parental leave benefits, there is a possibility that cross-country comparisons may reflect variations in policies such as those related to parental leave benefits. To account for this, we propose an expansion of the initial DAG to include a new pathway incorporating `earnings` in the model (see FigureXXX).
+
+It's important to note this is a simplification. It's plausible that parental leave benefits could directly influence the decision to have children by reducing the financial stress associated with parenthood. Therefore, adjusting for the extent of such benefits would be advisable.
+
+```{r, echo=FALSE, fig.cap="DAG  demonstrating the hypothesized relationships between the birth of the First Child (FC), Employment (Emp), Hours Worked (HW), Wage (W), Employer Benefits (EB), and Earnings (E). Note: This model is a simplification, and the effects of additional children and other potential confounding factors (TT and LC) are also captured in the analysis.", out.width= "100%", fig.align='center'}
+# Define the DAG
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# Emp: Employment (mediator variable, representing employment status)
+# HW: Hours Worked (mediator variable, representing hours worked)
+# W: Wage (mediator variable, representing wage)
+# EB: Employer Benefits (newly added mediator variable, representing benefits provided by the employer)
+
+dag <- dagitty( 'dag {
+  "FC" [exposure,pos="0,0"]
+  "E" [outcome,pos="2,0"]
+  "Emp" [mediator,pos="1,1"]
+  "HW" [mediator,pos="1,0"]
+  "W" [mediator,pos="1,-1"]
+  "EB" [mediator, pos="1,-2"]
+  "FC" -> "Emp" 
+  "FC" -> "HW"
+  "FC" -> "W"
+  "FC" -> "EB"
+  "Emp" -> "E"
+  "HW" -> "E"
+  "W" -> "E"
+  "EB" -> "E"
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")  # Suppress the legend
+
+```
+## Causal Effect vs Causal Mechanism
+While the authors deliver rather strong evidence on the existence of a causal effect the underlying mechanism is still unclear. The name child *penalty* suggests a punishment espically towards mothers but what if mothers decide to take jobs with more flexibility in order to raise their children? Maybe, economically speaking this increases their utility instead of punishes them. To understand the mechanism better it would be good to extend the research here and see in what kind of branches women move after bearing children. Is it a more family-friendly sector or is it the wage-rate that decreases even though women stay in the same sector.
+
+One explaination for the differences in the penalties could have to do with government policies. While numerous studies have been conducted to evaluate the influence of public policies, such as taxes, transfers, and family-focused policies like parental leave and child care provisions, on gender gaps and female labor supply, these policies do not adequately explain the "child penalties" experienced by mothers in the workforce.
+
+Another pontentially fruitful approach to explain this phenomen is to take a deeper look into gender-norms in given societies. Thi...
+
+## Authors do not control for having only one child
+
+The author's analysis does not control for those parents that only have one child. As a result, the long-term child penalties that we observe include the impacts of having additional children, and therefore, are influences by total fertility. To overcome this short-term we would suggest to run an additional model with a `only-one-child` variable.
 
 
-
-# Evaluate
-## How can we improve the research? 
-## Does it make sense how they did it?
-
-
-### Where to put the section on method? 
+<!--### Where to put the section on method? 
 Regression, event study
 "To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time."
 
 From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
 opt for family-friendly career tracks knowing that they will eventually have many children.
 While we do not specify the demand for children, we make the assumption that children kit are
-exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
+exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about? -->
 
 
-## Ok let's give it a go
-
-**Step 1**
-
-Estimand. The effect of `treatment` on `outcome`. 
-
-**Step 2**
-Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`. 
-
-**Step 3: DAG**
-
-We'll think about a DAG with just four nodes. 
-
-```{r}
-language_camp_dag <- dagify(grade ~ camp + gpa + gre,
-                        camp ~ gpa + gre,
-                        gre ~ gpa,
-                        outcome = "grade",
-                        exposure = "camp",
-                        coords = list(x = c(camp = 1, gpa = 2, gre = 3, grade = 4),
-                                      y = c(camp = 1, gpa = 2, gre = 2, grade = 1)))
-
-ggdag_status(language_camp_dag) +
-  theme_dag() +
-  guides(color = "none")  # Turn off legend
-```
-
-**Part 4**
-
-Students' GRE scores and undergraduate GPAs confound both the choice to enroll in the camp and final class grades. Additionally, undergraduate degrees help cause GRE scores.
-
-*We will generate syntetic data for this example*
-
-```{r}
-
-library(scales)
-
-# 1. GPA is associated with GRE scores
-# 2. Camp (binary) is associated with undergraduate GPA and GRE scores. Calculate a camp score and then a camp binary variable from it. 
-# 3. Final grade is caused by language camp, undergraduate GPA, and GRE scores
-
-gpa <- rnorm(100, mean = 2.5,sd = 1.5)
-e_gre <- rnorm(100, mean = 5, sd = 5)
-gre <- 140 + gpa*10 + e_gre
-gre_r<-rescale(gre, to = c(100, 170))
-
-e_camp_score <- rnorm(100, mean= 50, sd= 20)
-camp_score <- e_camp_score + 5*gpa + gre_r/5
-camp_score_r <- rescale(camp_score, to = c(0, 100))
-
-```
-
-**More part 4: Specify how these nodes are measured**
-
-See if you can find the effect. Run two models:
-
-- `grade ~ camp`: This is the naive, unadjusted, correlation-is-not-causation estimate. It's wrong.
-
-- `grade ~ camp + gpa + gre`: This is the adjusted estimate. 
-
-(Also adjust for GPA and GRE with inverse probability weighting to see if the ATE for `camp` still holds. This is entirely optional.)
-
-```{r}
-# Specify the models 
-
-# lm( ~ )
-
-```
-
-ATE = 
-
-**Part 5**
-
-Evaluation
