@@ -85,7 +85,32 @@ ggdag_status(dag) +
   guides(color = "none")  # Suppress the legend
 ```
 
-# HERE JPS SECTION ALSO USING THE DAG's
+# Thinking about the data
+The study conducted in the 2019 paper (the paper which we are focusing on) works as a form of Natural Experiment, as the births and decisions around work occur have occurred in the natural world. Data for Austria, Denmark, and Sweden is taken from administrative registers that hold data for the full population, while Germany, the US, and the UK use surveys with sufficiently large sample sizes and long time series. 
+Though the authors highlight the fact that "the ideal experiment for the estimand would be to randomize fertility", the study has several key aspects that work positively for it as a Natural Experiment.
+
+First, there is exogenous assignment of treatment (people have babies long before the study begins), meaning that assignment is not  subject to manipulation. Childbirth occurs naturally, though it is important to note that the authors chose to ONLY include treated individuals (child = true) in the study, and develop counterfactuals statistically instead of as natural data points. This is further explored in the Identification section later on.
+
+Second, data collection for purposes of the survey takes place after the data itself has been generated, meaning that there is no opportunity for the researchers to influence the data or response of individuals.
+
+Third, confounder bias is largely made negligible by the pool of data. Something could be said about participation bias when it comes to those who do and do not answer surveys, but the authors do not see this as a hindrance, given a very big sample size and frequent data.
+
+For the remainder of the Methods, and Identification sections, it is important to note that this paper bases its approach on a previous paper by Kleven et al. from 2018. Data collections is dissimilar, but the statistical formulations and approaches to bias reduction and variable control are the same.
+
+
+# Methods - Event Study Framework
+The paper follows an Event Study Framework, meaning that the focus of the study is to note changes in variables before and after a precise event.
+
+With regards to choosing Event Study as the study design, the authors recognize that, "although fertility choices are not exogenous", the effects of having a first child create changes in labour market outcomes that are "arguably orthogonal to unobserved determinants of those outcomes". Said differently, we expect the unobserved determinants to evolve smoothly over time, regardless of birth.
+
+Thus, this event study relies on the Smoothness Assumption (especially for identifying the short-run effects). The smoothness assumption tells us that the events happen in a continuous manner without abrupt jumps or discontinuities.
+
+The precise event in question is the birth of the first child, around which event-time 't' is centered. The Event Window extends backwards 5 years and forward 10 years on an individual basis so that t = (-5,-4...0...9,10) denotes the distance from the birth of each person's first child. The birth of the child for individual 'i' is independent of other time or age measurements and the births of other children. One thing to note is that t = -1 is not included in measurements, as it incorporates the effects of pregnancy on a woman that men do not experience. 
+
+
+# Methods - Baseline Model: Regression Formulation
+The DAG below presents a simple understanding of the potential relationships at play in this study. Speficially,it highlights the potential for confounding by Life-Cycle Trends (age) and Time Trends (year).
+
 
 ```{r, echo=FALSE, fig.cap="DAG  showing the hypothesized relationships between having a First Child (FC), Labor Supply (LS), Life-Cycle Trends (LCT), Time Trends (TT), and Earnings (E). LS represents the combined effect of employment status, hours worked, and wage. LCT and TT are confounders that are controlled for in the analysis. This model is a simplification, and the effects of additional children are also captured in the analysis.", out.width= "100%", fig.align='center'}
 # Define the DAG
@@ -117,6 +142,21 @@ ggdag_status(dag) +
   guides(color = "none")  # Suppress the legend
 ```
 
+In order to circumvent this in the baseline model, the authors create the regression equation below. 
+
+
+
+$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} $$
+
+The outcome variable Y corresponds to 'Earnings', for individual 'i' in calendar year 's' with relative event-time 't' (-5,...-10). The regression is calculated separately for men and women, denoted by superscript 'g'.
+
+The equation has three dummy terms (functioning through an Indicator) and an error term. 
+The first dummy term deals with the 'event-time', which is to say that it captures the coefficient for distance from the birth of the child. 
+The second dummy is the 'age' dummy, and helps us control for underlying life-cycle trends that occur at different points of an individual's life, such as entering the workforce or leaving it. Age is also important to include because it allows us to control for the fact that men and women have children at different times. 
+The final dummy is the 'year' dummy, and helps us control for time trends such as economic recessions, inflation trends, and world events that may interfere with our outcome.
+
+Given that we include 'age' and 'year' in the model, the DAG now looks like the following, showing that we break the confounding back-door paths.
+
 
 ```{r dag5, fig.cap= "Figure X: This DAG  outlines the causal relationships between the birth of the first child (FC), labor supply (LS), and earnings (E). The labor supply (LS) is a mediator variable that encapsulates the combined influence of employment status, hours worked, and wage rate. Notably, the model controls for Time Trends (TT) and Life-Cycle Trends (LCT), which are recognized confounders in this context. In this simplified representation, no direct links are drawn from TT and LCT to the other variables, reflecting the control for these confounders in the statistical model.", out.width= "100%", fig.align='center', echo=FALSE}
 # Define the DAG
@@ -144,14 +184,9 @@ ggdag_status(dag) +
 
 ```
 
-<!--The main outcome variable considered in this study is gross labor earnings. The authors convert the estimated effects into percentages to measure the child penalty experienced by women compared to men due to children.
 
-Overall, the paper focuses on estimating the impact of having children on labor market outcomes for mothers and fathers, utilizing event studies and regression models. The goal is to identify and quantify the child penalties experienced by women relative to men in terms of earnings and labor market trajectories.
 
-We will use the term _child penalty_ throughout the report which is a common term in the literature and points towards the lower projected earnings of mothers compared to fathers. However, while this term suggests that women do not voluntarily choose positions that have valuable family amentiies (but lower wages) we do not want to suggest that this causal explaination is final as we discuss in the last section.-->
 
-$$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
-$$
 
 
 
