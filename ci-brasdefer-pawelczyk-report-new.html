@@ -362,11 +362,22 @@ Penalty Bla</h1>
 
 <div id="research-project" class="section level1">
 <h1>Research project</h1>
-<p>Add the idea of the research project here for instance like that
-probably also adding results here and explaining the main policy
-question… I would frame it like an very short abstract (bc he said we
-should assume he read it). Maybe add estimand here already instead of
-next section.</p>
+<p>This paper focuses on the impact of children on the labor gross
+earnings of mothers and fathers (the estimand that you can see in
+<code>[DAG plot](#dag_plot)</code>). More precisely the paper
+investigates whether the “child penalty” that refers to the negative
+impact or disadvantage experienced by individuals, typically women, in
+their earnings. It represents the gap in earnings between individuals
+with children and those without children.</p>
+<p>The authors try to contribute to the broad litature of <em>gender
+ineqality</em>. The authors utilize <em>event studies</em> centered
+around the birth of the first child and employ panel data with
+information on labor market outcomes and children.</p>
+<!--The main outcome variable considered in this study is gross labor earnings. The authors convert the estimated effects into percentages to measure the child penalty experienced by women compared to men due to children.
+
+Overall, the paper focuses on estimating the impact of having children on labor market outcomes for mothers and fathers, utilizing event studies and regression models. The goal is to identify and quantify the child penalties experienced by women relative to men in terms of earnings and labor market trajectories.
+
+We will use the term _child penalty_ throughout the report which is a common term in the literature and points towards the lower projected earnings of mothers compared to fathers. However, while this term suggests that women do not voluntarily choose positions that have valuable family amentiies (but lower wages) we do not want to suggest that this causal explaination is final as we discuss in the last section.-->
 </div>
 <div id="walk-through-the-causal-inference-pipeline" class="section level1">
 <h1>Walk through the causal inference pipeline</h1>
@@ -374,12 +385,8 @@ next section.</p>
 <div id="first-what-is-the-estimand" class="section level1">
 <h1>First, what is the estimand?</h1>
 <!--Have a clear idea of what it is that we want to measure.-->
-<p>The estimand: Impact of children on the labour market outcomes of
-women relative to men. <em>I wonder whether labor market outcomes is
-precise or earnings are better</em> Research gap: most research sheds
-light into local effect of a second or third chilf but they cannot
-provide estiamtes of the total effect of children and especially the
-first child</p>
+<p>The estimand: Impact of children on the earnings of women relative to
+men.</p>
 <pre class="r"><code># The estimand as a DAG
 estimand_dag &lt;- dagify(earnings ~ birth_having_child,
                         outcome = &quot;earnings&quot;,
@@ -390,7 +397,12 @@ estimand_dag &lt;- dagify(earnings ~ birth_having_child,
 ggdag_status(estimand_dag) +
   theme_dag() +
   guides(color = &quot;none&quot;)  # Turn off legend</code></pre>
-<p><img src="data:image/png;base64,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" width="672" /></p>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Directed Acyclic Graph (DAG) of the causal relationships." width="672" />
+<p class="caption">
+Directed Acyclic Graph (DAG) of the causal relationships.
+</p>
+</div>
 <pre class="r"><code># Define the DAG
 dag &lt;- dagitty( &#39;dag {
   &quot;Birth&quot; [exposure,pos=&quot;0,0&quot;]
@@ -438,58 +450,63 @@ ggdag_status(dag1) +
 \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] +
 \nu^{g}_{\text{ist}}
 \]</span></p>
-<pre class="math"><code>\begin{equation}
-Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
-\end{equation}
-
-
-
-### Second, thinking about the data
-&lt;!--How will I gather data?
-Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? --&gt;
-What kind of data do we have? How was the data gathered?
-
-### Three, contemplaiting the data generation process
-Draw out the DAG that you consider best explains the data generation process. 
-
-### Fourth, Identification strategy!
-Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
-
-
-# Fourth continued, Effect identification strategy!
-Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we&#39;re all good? 
-ATE? CATE? ITE?
-
-
-
-# Evaluate
-## How can we improve the research? 
-## Does it make sense how they did it?
-
-
-### Where to put the section on method? 
-Regression, event study
-&quot;To investigate this question, we adopt an event study approach based on sharp changes around the birth of the first child for mothers relative to fathers. *Although fertility choices are not exogenous*, the event of having a first child generates sharp changes in labor market outcomes that are arguably orthogonal to unobserved determinants of those outcomes as they should evolve smoothly over time.&quot;
-
-From Appendix 2019 paper we get: &quot;The latter effect captures for example that some women may take less education or
-opt for family-friendly career tracks knowing that they will eventually have many children.
-While we do not specify the demand for children, we make the assumption that children kit are
-exogenous to the outcome variable Yit conditional on the set of underlying determinants zit.&quot; -&gt; maybe this is what we can make some suggestions about?
-
-
-## Ok let&#39;s give it a go
-
-**Step 1**
-
-Estimand. The effect of `treatment` on `outcome`. 
-
-**Step 2**
-Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`. 
-
-**Step 3: DAG**
-
-We&#39;ll think about a DAG with just four nodes. 
-</code></pre>
+<div id="second-thinking-about-the-data" class="section level3">
+<h3>Second, thinking about the data</h3>
+<!--How will I gather data?
+Will the data be generated via an experimental design, was there an experiment already done, maybe a natural experiment, or would the only available data be purely observational? -->
+<p>What kind of data do we have? How was the data gathered?</p>
+</div>
+<div id="three-contemplaiting-the-data-generation-process" class="section level3">
+<h3>Three, contemplaiting the data generation process</h3>
+<p>Draw out the DAG that you consider best explains the data generation
+process.</p>
+</div>
+<div id="fourth-identification-strategy" class="section level3">
+<h3>Fourth, Identification strategy!</h3>
+<p>Confounders? Colliders? Mediators? What are we controlling for or not
+controlling for?</p>
+</div>
+</div>
+<div id="fourth-continued-effect-identification-strategy" class="section level1">
+<h1>Fourth continued, Effect identification strategy!</h1>
+<p>Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was
+already randomized we’re all good? ATE? CATE? ITE?</p>
+</div>
+<div id="evaluate" class="section level1">
+<h1>Evaluate</h1>
+<div id="how-can-we-improve-the-research" class="section level2">
+<h2>How can we improve the research?</h2>
+</div>
+<div id="does-it-make-sense-how-they-did-it" class="section level2">
+<h2>Does it make sense how they did it?</h2>
+<div id="where-to-put-the-section-on-method" class="section level3">
+<h3>Where to put the section on method?</h3>
+<p>Regression, event study “To investigate this question, we adopt an
+event study approach based on sharp changes around the birth of the
+first child for mothers relative to fathers. <em>Although fertility
+choices are not exogenous</em>, the event of having a first child
+generates sharp changes in labor market outcomes that are arguably
+orthogonal to unobserved determinants of those outcomes as they should
+evolve smoothly over time.”</p>
+<p>From Appendix 2019 paper we get: “The latter effect captures for
+example that some women may take less education or opt for
+family-friendly career tracks knowing that they will eventually have
+many children. While we do not specify the demand for children, we make
+the assumption that children kit are exogenous to the outcome variable
+Yit conditional on the set of underlying determinants zit.” -&gt; maybe
+this is what we can make some suggestions about?</p>
+</div>
+</div>
+<div id="ok-lets-give-it-a-go" class="section level2">
+<h2>Ok let’s give it a go</h2>
+<p><strong>Step 1</strong></p>
+<p>Estimand. The effect of <code>treatment</code> on
+<code>outcome</code>.</p>
+<p><strong>Step 2</strong> Data. Our avbailable variables are
+<code>gre</code>,<code>gpa</code>, <code>camp</code>, and
+<code>grade</code>.</p>
+<p><strong>Step 3: DAG</strong></p>
+<p>We’ll think about a DAG with just four nodes.</p>
 <pre class="r"><code>language_camp_dag &lt;- dagify(grade ~ camp + gpa + gre,
                         camp ~ gpa + gre,
                         gre ~ gpa,
@@ -539,6 +556,7 @@ optional.)</p>
 <p>ATE =</p>
 <p><strong>Part 5</strong></p>
 <p>Evaluation</p>
+</div>
 </div>
 
 

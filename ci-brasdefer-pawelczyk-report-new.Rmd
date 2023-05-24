@@ -20,19 +20,16 @@ library(ggplot2)
 
 # Research project
 
-Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question... I would frame it like an very short abstract (bc he said we should assume he read it). 
-Maybe add estimand here already instead of next section.
+This paper focuses on the impact of children on the labor gross earnings of mothers and fathers (the estimand). More precisely the paper investigates whether the "child penalty" that refers to the negative impact or disadvantage experienced by individuals, typically women, in their earnings. It represents the gap in earnings between individuals with children and those without children.
 
+The authors try to contribute to the broad litature of _gender ineqality_. The authors utilize _event studies_ centered around the birth of the first child and employ panel data with information on labor market outcomes and children.
 
-# Walk through the causal inference pipeline
+# DAG and extension
 
-# First, what is the estimand? 
-<!--Have a clear idea of what it is that we want to measure.-->
+We present the baseline DAG in Figure X where the estimand is shown in the most simplest way.
+However, the authors admit that earning penalties can come from three margins, nameley: the extensive margin of labor supply (employment), the intensive margin of labor supply (hours worked) and finally the wage rate (denoted by _w_). We include this into a new DAG (Figure X) to make clear that that the earnings consist of different parts.
 
-The estimand: Impact of children on the labour market outcomes of women relative to men. _I wonder whether labor market outcomes is precise or earnings are better_
-Research gap: most research sheds light into local effect of a second or third chilf but they cannot provide estiamtes of the total effect of children and especially the first child
-
-```{r}
+```{r dag_plot, fig.cap="Directed Acyclic Graph (DAG) of the causal relationships.", fig.cap.short="dag_plot"}
 # The estimand as a DAG
 estimand_dag <- dagify(earnings ~ birth_having_child,
                         outcome = "earnings",
@@ -67,6 +64,21 @@ ggdag_status(dag) +
   guides(color = "none")
 ```
 
+
+
+
+<!--The main outcome variable considered in this study is gross labor earnings. The authors convert the estimated effects into percentages to measure the child penalty experienced by women compared to men due to children.
+
+Overall, the paper focuses on estimating the impact of having children on labor market outcomes for mothers and fathers, utilizing event studies and regression models. The goal is to identify and quantify the child penalties experienced by women relative to men in terms of earnings and labor market trajectories.
+
+We will use the term _child penalty_ throughout the report which is a common term in the literature and points towards the lower projected earnings of mothers compared to fathers. However, while this term suggests that women do not voluntarily choose positions that have valuable family amentiies (but lower wages) we do not want to suggest that this causal explaination is final as we discuss in the last section.-->
+
+# Walk through the causal inference pipeline
+
+# First, what is the estimand? 
+<!--Have a clear idea of what it is that we want to measure.-->
+The estimand: Impact of children on the earnings of women relative to men.
+
 ```{r}
 # Define the DAG
 dag1 <- dagitty( 'dag {
@@ -93,11 +105,6 @@ ggdag_status(dag1) +
 $$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
 $$
 
-```{math}
-\begin{equation}
-Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
-\end{equation}
-
 
 
 ### Second, thinking about the data
@@ -112,9 +119,37 @@ Draw out the DAG that you consider best explains the data generation process.
 Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
 
 
-# Fourth continued, Effect identification strategy!
-Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we're all good? 
-ATE? CATE? ITE?
+# Advanced identification strategy: DID and IV variables
+<!--Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we're all good? 
+ATE? CATE? ITE?-->
+## Instrumental Variable Event Study
+To validate whether the authors identification strategy is valid the authors run two main identification checks in order to test the robustness of the results and therefore to address potential bias and establish a causal inference.
+
+In this identification check, the authors propose a variation of their event study approach by introducing an Instrumental Variable (IV) strategy. They use the gender composition of the first two children as an instrument for having a third child, following the reasoning that parents with two same-sex children are more likely to have a third child. The validity of this instrument relies on the assumption that the sex of the first two children doesn't independently impact labor market outcomes (the exclusion restriction).
+
+The authors modify their event study specification to estimate the Local Average Treatment Effect (LATE) of having a third child. This means they are focusing on the subpopulation influenced by the instrument (the "compliers"). The model is defined as:
+
+To facilitate a valid comparison, the authors modify their event study model as follows:
+
+$$Y^{}_{\text{istt'}} = \sum_{j \neq -1} \alpha^{}_{j} \cdot I[j = t] + \sum_k \beta^{}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{}_{y} \cdot I[y = s] + \sum_{n \neq -1} \delta^{}_{n} \cdot I[j = t'] + \nu^{}_{\text{istt'}}
+$$
+
+In this model, t' represents the event time with respect to the third child. The new term $∑ δ_n · I[n = t']$ introduces event time dummies for the birth of the third child. The authors also keep the event time dummies for the first child, as previous childbearing dynamics may impact the effect of the third child.
+
+The IV specification is identical, except it includes an additional instrumenting strategy which instruments the event time dummies around the third child birth using the sex mix of the first two children:
+
+$$I[n = t'] = I[n = t'] * I[same sex siblings]$$
+
+In other words, I[n = t'] takes the value of one when the woman is at event time t' (previous t0) with respect to the third child and her first two children are of the same sex.
+
+The counterfactual outcome, denoted $\tilde{Y}^w_{istt'}$, is calculated excluding the effect of the third child but including the effects of the first child and other controls. It represents the expected labour market outcome for a woman if she did not have a third child, providing a baseline against which to compare the actual outcomes of those who did have a third child.
+
+The findings suggest that the event study and IV estimates align closely, indicating robustness in their empirical approach. The short-run effect of the third child is similar to that of the first, showing an earnings reduction of 20-30%. However, the long-run effect of a third child is about 5%, lower than the long-run effect of the first child for those who only have one child, suggesting a diminishing marginal effect with the addition of more children.
+
+
+
+
+
 
 
 
