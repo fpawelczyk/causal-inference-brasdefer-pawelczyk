@@ -1,5 +1,5 @@
 ---
-title: "Causal Inference Report: Review on Child Penalty Bla"
+title: "Causal Inference Report: Review on Child Penalty"
 author: 
   - Juan Pablo Brasdefer 
   - Fabian Pawelczyk
@@ -18,16 +18,7 @@ library(ggdag)
 library(ggplot2)
 ```
 
-# Research project
-
-Add the idea of the research project here for instance like that probably also adding results here and explaining the main policy question... I would frame it like an very short abstract (bc he said we should assume he read it). 
-Maybe add estimand here already instead of next section.
-
-
-# Walk through the causal inference pipeline
-
-# First, what is the estimand? 
-<!--Have a clear idea of what it is that we want to measure.-->
+>
 
 The estimand: Impact of children on the labour market outcomes of women relative to men. _I wonder whether labor market outcomes is precise or earnings are better_
 Research gap: most research sheds light into local effect of a second or third chilf but they cannot provide estiamtes of the total effect of children and especially the first child
@@ -107,7 +98,7 @@ For the remainder of the Methods, and Identification sections, it is important t
 
 
 
-# Methods - Event Study Framework
+# Methods: Event Study Framework
 The paper follows an Event Study Framework, meaning that the focus of the study is to note changes in variables before and after a precise event.
 
 With regards to choosing Event Study as the study design, the authors recognize that, "although fertility choices are not exogenous", the effects of having a first child create changes in labour market outcomes that are "arguably orthogonal to unobserved determinants of those outcomes". Said differently, we expect the unobserved determinants to evolve smoothly over time, regardless of birth.
@@ -126,7 +117,7 @@ The precise event in question is the birth of the first child, around which even
 
 
 
-# Methods - Baseline Model: Regression Formulation
+# Methods: Baseline Regression Model
 The DAG below presents a simple understanding of the potential relationships at play in this study. Speficially,it highlights the potential for confounding by LIFE CYCLE CHOICES (age) and EXTERNAL GLOBAL TRENDS (year).
 
 
@@ -164,89 +155,75 @@ It is also important to note that both 'age' and 'year' are included nonparametr
 
 
 
-INCLUDE THIS WRITING? 
-.
+# Methods: Child Penalty Percentage
+
+The estimated level effects (Ym and Yw, the results of our baseline regression) are then converted into percentages for later comparison via the following equation:
+
+$$P^{g}_{t} \equiv \frac{\hat{\alpha}^{g}_{t}}{E[\tilde{Y}^{g}_{ist}| t]}$$
+
+Where Ỹg (in the denominator) is the predicted outcome of our baseline regression when we omit the dummy responsible for the child-birth event. This is effectively a counterfactual regression that looks like:
 
 
-
-
-
-
-
-
-
-
-
-
-
-# Methods - Percentage of Child Penalty
-
-
-
-We specify equation (1) in levels rather than in logs to be able to keep the
-zeros in the data (due to nonparticipation). We convert the estimated level
-effects into percentages by calculating PGT, where YG is the predicted outcome when omitting the contribution of the event dummies.
-Thus, PGT captures the year-t effect of children as a percentage of the counterfactual outcome absent children. Estimating percentage effects based on a level-specification (rather than a log-specification) may raise the concern that the estimates are mainly driven by the effects at the top of the distribution, especially when considering earnings as the outcome. We will present quantile regressions of (1) that rule out this concern.
-
-
-
-
-
-Using the separate Ym and Yw regressions,  the Estimated Level Effect of equation 1 is converted to a percentage by using a counterfactual model. In practice, this counterfactual is simply the original regression excluding the event-time variable. Effectively, the counterfactual is the same outcome "absent children".
 
 $$\tilde{Y}^{g}_{\text{ist}} = \sum_k \hat{\beta}^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \hat{\gamma}^{g}_{y} \cdot I[y = s]  $$
 
-The authors then take this setup and subtract the women's penalty from the men's and divide the result by the expected value of the counterfactual given t in order to find "The Child Penalty on Women, Relative to Men, at event time t".
+Given this counterfactual, PGT captures the year-t effect of children as a percentage of the counterfactual outcome absent children. 
+
+Finally, an equation to determine the Child Penalty on women, relative to men, at event time t is given by:
+
+$$P_{t} \equiv \frac{\hat{\alpha}^{m}_{t} - \hat{\alpha}^{w}_{t}}{E[\tilde{Y}^{w}_{ist}|   t  ]}$$
 
 
-PT EQUATION OF M-W
+
+Where the alpha coefficients correspond to the coefficients of the baseline-men and baseline-women models respectively and the denominator corresponds to the women's counterfactual regression model absent-children. 
 
 
-Once again, very short-run penalties such as P0, P1, or P2 rely on the smoothness assumption, but longer term penalties such as P20 would require much stronger assumptions (which can make replicability/ generalization difficult), or a defined control group. 
 
 
 
 
 # Identification Strategy 1: Conceptual Framework
-The authors formulate the relationship between variables in what they call the "Conceptual Framework". 
-Parallel to the causal relationships outlined in the initial DAGs above, these relationships are a more general view of how earnings fluctuations are constructed.
+Beyond the baseline model, the authors do the responsible thing and explore the degree to which their study and assumptions are causally correct. They begin with establishing a conecptual framework.
 
-They beging this formulation by establishing some precision around the idea of the 'event' and how it relates to the total number of children that an individual will have over their lifetime.
+Parallel to the causal relationships outlined in the DAGs above, the relationships established in this framework are a more general view of how earnings fluctuations are constructed.
 
-The authors assign a variable, 'k' that corresponds to a number of children. ki, for individual 'i', is thus labelled the "anticipated lifetime fertility path" for one person, and is made up of values:
+
+They beging this framework by establishing some precision around the idea of the 'event' and how it relates to the total number of children that an individual will have over their lifetime. The authors assign a variable that corresponds to the number of children 'k' for individual 'i'. This 'ki', is named the "anticipated lifetime fertility path" (ALFP) for one person, and is made up of values beginning with 0 and ending with the total number 'kiT' (at the end of a person's life, 'T')
+
+where the value of 'kit' at any point 't' is the number of children of the individual at that time.
 
 $$ k_{i} = (0, k_{it}, ...k_{iT})$$
-Where the value of ki at any point t is the number of children of the individual, ending with kiT which denotes the total children over the individual's lifetime. An important thing to note here is that, the authors DO NOT discriminate individuals based on the number of children had after the first. In other words, there are, conceivably, data points with event-time t greater than 1 that have underlying children values also great than 1. This means that the medium-to-long-run penalties (P5,...P10) also include the effect of having more children beyond the firstborn, and so have the potential of capturing the total effect of children on gender-based earning inequalities.
+An important thing to note here is that the authors DO NOT discriminate individuals based on the number of children had after the first. In other words, there are conceivably data points with event-time 't' greater than 1 that have underlying child-number values also great than 1. This means that the medium-to-long-run penalties (P5,...P10) also include the effect of having more children beyond the firstborn, and so have the potential of capturing the total effect of children on gender-based earning inequalities.
 
-The authors begin with the base equation below, which outlines that Earnings 'Y' for individual 'i' at 't' are a function of the number of children at time 't' and choices around the extensive and intensive margins of labour participation. 
+The authors then conceptualize Earnings 'Y' as a function of three factors: the ALFP and two sets of "earnings determinants", the first of which (x) are influenced by the presence of children (eg: hours worked, which industry) and the second of which (z) are independent of children (eg: age, ability...). 
 
 
 $$Y_{it} = F(k_{it}, x_{it}, z_{it})$$
-$$      = F(k_{it},x(k_{it},k_i,z_{it}),z_{it})$$ 
+
+As earning determinants 'xit' are chosen based on the presence (or absence) of a child, the authors expand this formulation to reflect x's dependency on number of children at time t, ALFP, and the non-depenent determinants. By including ALFP (entire path of past and future fertility) in this formulation for xit, the equation captures 'pre-child' effects such as women potentially choosing to invest less in education or opt for family-friendly career since they plan to have children in some future. This cannot be captured explicitly, however, as the event study is designed to only capture 'post-child' effects. 
+
+$$   x_{it}    = x(k_{it},k_i,z_{it}) $$
+
+The post-child effect thus works through 'kit' directly AND in the 'kit' that works through x. With this, the final conceptual framework can be written mathematically as:
+
+$$   Y_{it}    = F(k_{it},x(k_{it},k_i,z_{it}),z_{it}) $$
+Which gives us our Short-Run Post-Child Impacts, where times t+ and t- indicate post and pre-event, and corresponding z-preferences adjust accordingly.:
+
+$$E[Y_{it+} - Y_{it-}] = E[F(1, x(1, k_{i}, z_{it+}), z_{it+})] - E[F(0, x(0, k_{i}, z_{it-}), z_{it-})]$$
+
+And Long-Run Post-Child Impacts, where time t++ indicates long-run post-event times.
 
 
+$$E[Y_{it++} - Y_{it-}] = E[F(k_{iT}, x(1, k_{iT}, z_{it++}), z_{it++})] - E[F(0, x(0, k_{i}, z_{it-}), z_{it-})]$$
 
+Once again, this long-run impact captures the effect of total lifetime fertility kiT as opposed to the effect of only the first child. As well, it should be obvious that the smoothness assumption is no longer sufficient for identification, as we begin to have large changes in the 'z' component with a long enough time window. Thus, if we are not fully controlling for 'zit', then the long-run child penalty may be a biased estimate of the true post-child impact. 
+As was discussed briefly when speaking about the primary regression equation, including non-parametric versions of 'age' and 'year' in the regression equation is useful in controlling confounders and removing bias in the model, but it really also only holds upfor the short-run. 
 
-
-
-FABIAN WRITINGS
-
-
-From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
-opt for family-friendly career tracks knowing that they will eventually have many children.
-While we do not specify the demand for children, we make the assumption that children kit are exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
-
-
-
-
+This means that longer term penalties such as P20 require much stronger identification techniques such as a defined control group. To do this, the authors decide to pursue a Difference in Differences (DiD) and Instrumental Variable strategy.
 
 
 
 # Identification Strategy 2: Difference in Differences
-As was discussed briefly when speaking about the primary regression equation, including non-parametric versions of 'age' and 'year' in the regression equation is useful in controlling confounders and removing bias in the model, but it it can be further improved. This is great, because we know that in the end we would rather have an unbiased model than a model with high effect or low error.
-
-The authors decide to pursue a Difference in Differences (DiD) and Instrumental Variable strategy to help with this.
-
 For the (DiD) component, which requires a control group in order to be able to locate the 'Differences', the authors designate 'men a and women that never have children in their lifetimes' (kiT = 0) as the control group. 
 
 To do this, they first classify those aged 40 and older as kiT = 0, arguing that a negigible amount of people over this age go on to have children. Then, since the data only runs from 1955-2013, those in the 1973-2013 bracket (ie: sub-40 at any point in the dataset) are assigned an estimated value of being kiT = 0 across the rest of their lives. The authors do this through a simple (but useful) Linear Probability Model, 
@@ -278,6 +255,19 @@ $$E[Y_{i,t>0} - Y_{i,t<0} | k_{iT} > 0] - E[Y_{i,t>0} - Y_{i,t<0} | k_{iT} = 0]$
 Said in plain 'ol english, the above equation says:
 
 [The expected value of (Earnings post-birth) minus (Earnings pre-birth) for those who had at least one child] minus [The expected value of (Earnings post-birth) minus (Earnings pre-birth) for those who had no children throughout their lifetime but have been assigned a placebo]
+
+
+
+
+
+
+
+
+
+FABIAN WRITINGS
+
+
+While we do not specify the demand for children, we make the assumption that children kit are exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
 
 
 
