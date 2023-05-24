@@ -94,17 +94,27 @@ ggdag_status(dag1) +
 
 
 # Second, thinking about the data
-For the remainder of the Data, Methods, and Identification sections, it is important to note that this paper bases its approach on a previous paper by Kleven et al. from 2018. Data collections is dissimilar, but the approaches and statistical formulations are the same. Important distinctions between the two will be made clear as they arise.
-
 The study conducted in the 2019 paper (the paper which we are focusing on) works as a form of Natural Experiment, as the births and decisions around work occur have occurred in the natural world. Data for Austria, Denmark, and Sweden is taken from administrative registers that hold data for the full population, while Germany, the US, and the UK use surveys with sufficiently large sample sizes and long time series. 
 Though the authors highlight the fact that "the ideal experiment for the estimand would be to randomize fertility", the study has several key aspects that work positively for it as a Natural Experiment.
 
-First, there is exogenous assignment of treatment, meaning that assignment is not  subject to manipulation. Childbirth occurs naturally, though it is important to note that the authors chose to ONLY include treated individuals (child = true) in the study, and develop counterfactuals statistically instead of as natural data points. This is further explored in a following section.
+First, there is exogenous assignment of treatment (people have babies long before the study begins), meaning that assignment is not  subject to manipulation. Childbirth occurs naturally, though it is important to note that the authors chose to ONLY include treated individuals (child = true) in the study, and develop counterfactuals statistically instead of as natural data points. This is further explored in the Identification section later on.
 
 Second, data collection for purposes of the survey takes place after the data itself has been generated, meaning that there is no opportunity for the researchers to influence the data or response of individuals.
 
 Third, confounder bias is largely made negligible by the pool of data. Something could be said about participation bias when it comes to those who do and do not answer surveys, but the authors do not see this as a hindrance, given a very big sample size and frequent data.
 
+For the remainder of the Methods, and Identification sections, it is important to note that this paper bases its approach on a previous paper by Kleven et al. from 2018. Data collections is dissimilar, but the statistical formulations and approaches to bias reduction and variable control are the same.
+
+
+
+# Methods - Event Study Framework
+The paper follows an Event Study Framework, meaning that the focus of the study is to note changes in variables before and after a precise event.
+
+With regards to choosing Event Study as the study design, the authors recognize that, "although fertility choices are not exogenous", the effects of having a first child create changes in labour market outcomes that are "arguably orthogonal to unobserved determinants of those outcomes". Said differently, we expect the unobserved determinants to evolve smoothly over time, regardless of birth.
+
+Thus, this event study relies on the Smoothness Assumption (especially for identifying the short-run effects). The smoothness assumption tells us that the events happen in a continuous manner without abrupt jumps or discontinuities.
+
+The precise event in question is the birth of the first child, around which event-time 't' is centered. The Event Window extends backwards 5 years and forward 10 years on an individual basis so that t = (-5,-4...0...9,10) denotes the distance from the birth of each person's first child. The birth of the child for individual 'i' is independent of other time or age measurements and the births of other children. One thing to note is that t = -1 is not included in measurements, as it incorporates the effects of pregnancy on a woman that men do not experience. 
 
 
 
@@ -114,67 +124,75 @@ Third, confounder bias is largely made negligible by the pool of data. Something
 
 
 
-# Methods
 
-# Event Study 
-The paper follows an Event Study framework.
 
-With regards to choosing Event Study as the study design, the authors recognize that, "although fertility choices are not exogenous", the effects of having a first child create changes in labour market outcomes (both extensive and intensive) that are "arguably orthogonal to unobserved determinants of those outcomes", as we expect these to evolve smoothly over time.
-
-Thus, this event study relies on the Smoothness Assumption, specifically for identifying the short-run effects. The smoothness assumption tells us that the events happen in a continuous manner without abrupt jumps or discontinuities.
-
-The precise event in question is the birth of the first child, around which time 't' is centered. The Event Window extends backwards 5 years and forward 10 so that t = (-5,-4...0...9,10) denotes the distance from the event. The birth of the child for individual 'i' is independent of other time or age measurements and the births of other children. One thing to note is that t = -1 is not included in measurements, as it incorporates the effects of pregnancy on a woman that men do not experience. 
+# Methods - Baseline Model: Regression Formulation
+The DAG below presents a simple understanding of the potential relationships at play in this study. Speficially,it highlights the potential for confounding by LIFE CYCLE CHOICES (age) and EXTERNAL GLOBAL TRENDS (year).
 
 
 
-
-//maybe put this stuff in another section//
-The short-run penalty is estimated by comparing event times just before (t-) and just after (t+) the event. The EQUATION BELOW shoes this effect.
+DAG CONFOUND
 
 
-Where Y denotes... K denotes... X denotes... Z denotes...
-This equation is able to capture the short-run penalty, even if Zit is not conditioned on (ie: non-inclusion of age and year dummies) because of the smoothness assumption. Said differently, if we looked at people who did not have children, their Yit+ and Yit- would be approximately equal.
+In order to circumvent this in the baseline model, the authors create the regression equation below. 
 
-However, the smoothness assumption falls apart for long-run effects, and so controlling for zit allows us to not worry. If we were to not fully control for zit, the long-run child penalty would turn out to be a very biased estimate. 
-
-
-
-
-
-
-
-
-
-FABIAN WRITINGS
-
-
-From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
-opt for family-friendly career tracks knowing that they will eventually have many children.
-While we do not specify the demand for children, we make the assumption that children kit are
-exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
-
-
-
-
-
-
-# Regression
-The central equation of the study is a regression equation, with output variable Y corresponding to 'Earnings', and is calculated separately for men and women, resulting in two Y outcomes. The equation is shown below.
 
 
 $$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} $$
 
-In terms of notation, g denotes gender (separate regression for m/f), i denotes the individual, s the year (1986, 2002...), and t the event-time (-5, 2...). 
+The outcome variable Y corresponds to 'Earnings', for individual 'i' in calendar year 's' with relative event-time 't' (-5,...-10). The regression is calculated separately for men and women, denoted by superscript 'g'.
 
 The equation has three dummy terms (functioning through an Indicator) and an error term. 
 The first dummy term deals with the 'event-time', which is to say that it captures the coefficient for distance from the birth of the child. 
 The second dummy is the 'age' dummy, and helps us control for underlying life-cycle trends that occur at different points of an individual's life, such as entering the workforce or leaving it. Age is also important to include because it allows us to control for the fact that men and women have children at different times. 
 The final dummy is the 'year' dummy, and helps us control for time trends such as economic recessions, inflation trends, and world events that may interfere with our outcome.
 
-If the age and year dummies were not oncluded, the estimated event coefficient ALPHA HAT would give us the mean value of the outcome at event time, relative to t = -1.
+Given that we include 'age' and 'year' in the model, the DAG now looks like the following, showing that we break the confounding back-door paths.
 
 
-Using the separate Ym and Yw, the Estimated Level Effect of equation 1 is converted to a percentage by using a counterfactual model. In practice, this counterfactual is simply the original regression excluding the event-time variable. Effectively, the counterfactual is the same outcome "absent children".
+
+
+DAG NO CONFOUND
+
+
+
+They are able to identify the effects of all three sets of dummies because, "conditional on age and year, there is variation in event time driven by variation in the age at which individuals have their first child". 
+As well, If the age and year dummies were not included, the estimated event coefficients ALPHA HAT would correspond to the mean value of the outcome at event time, relative to t = -1.
+It is also important to note that both 'age' and 'year' are included nonparametrically, meaning that the authors do not assume a specific functional form or distribution of their variables. This allows for more flexible modelling of the relationship with each other and the estimand.
+
+
+
+
+
+INCLUDE THIS WRITING? 
+.
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Methods - Percentage of Child Penalty
+
+
+
+We specify equation (1) in levels rather than in logs to be able to keep the
+zeros in the data (due to nonparticipation). We convert the estimated level
+effects into percentages by calculating PGT, where YG is the predicted outcome when omitting the contribution of the event dummies.
+Thus, PGT captures the year-t effect of children as a percentage of the counterfactual outcome absent children. Estimating percentage effects based on a level-specification (rather than a log-specification) may raise the concern that the estimates are mainly driven by the effects at the top of the distribution, especially when considering earnings as the outcome. We will present quantile regressions of (1) that rule out this concern.
+
+
+
+
+
+Using the separate Ym and Yw regressions,  the Estimated Level Effect of equation 1 is converted to a percentage by using a counterfactual model. In practice, this counterfactual is simply the original regression excluding the event-time variable. Effectively, the counterfactual is the same outcome "absent children".
 
 $$\tilde{Y}^{g}_{\text{ist}} = \sum_k \hat{\beta}^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \hat{\gamma}^{g}_{y} \cdot I[y = s]  $$
 
@@ -207,120 +225,60 @@ $$Y_{it} = F(k_{it}, x_{it}, z_{it})$$
 $$      = F(k_{it},x(k_{it},k_i,z_{it}),z_{it})$$ 
 
 
+
+
+
+
+FABIAN WRITINGS
+
+
+From Appendix 2019 paper we get: "The latter effect captures for example that some women may take less education or
+opt for family-friendly career tracks knowing that they will eventually have many children.
+While we do not specify the demand for children, we make the assumption that children kit are exogenous to the outcome variable Yit conditional on the set of underlying determinants zit." -> maybe this is what we can make some suggestions about?
+
+
+
+
+
+
+
 # Identification Strategy 2: Difference in Differences
-The first identifi- cation check is a difference-in-differences (DD) event study design in which we compare those who have children to those who never have children. This design is based on assigning placebo births to individuals who never have children, drawing from the observed distribution of age at first child among those who do have chil- dren. 
+As was discussed briefly when speaking about the primary regression equation, including non-parametric versions of 'age' and 'year' in the regression equation is useful in controlling confounders and removing bias in the model, but it it can be further improved. This is great, because we know that in the end we would rather have an unbiased model than a model with high effect or low error.
+
+The authors decide to pursue a Difference in Differences (DiD) and Instrumental Variable strategy to help with this.
+
+For the (DiD) component, which requires a control group in order to be able to locate the 'Differences', the authors designate 'men a and women that never have children in their lifetimes' (kiT = 0) as the control group. 
+
+To do this, they first classify those aged 40 and older as kiT = 0, arguing that a negigible amount of people over this age go on to have children. Then, since the data only runs from 1955-2013, those in the 1973-2013 bracket (ie: sub-40 at any point in the dataset) are assigned an estimated value of being kiT = 0 across the rest of their lives. The authors do this through a simple (but useful) Linear Probability Model, 
+
+$$ P[k_{iT} = 0] = X'\beta $$
+where the probability is a function of X', a conjuction of 7 variables that include  education level, region of residence, generation of grandparents... that determine the probability of never having any children. It is then trained on the 1955-73 cohorts, and used to assign values of kiT = 0 for similar individuals in the 1973+ cohorts.
+
+The finalized control group is thus a mix of "Non-Truncated" 1955-73 true non-parents and "Truncated" 1973+ probable non-parents.
+
+
+Next, to 'Allocate Placebo Births' to the control group (and thus create a group for comparison in differences), the authors distinguish once more between the Non-Truncated and Truncated groups. For the older, truncated groups, they distribution of Age at First Child, 'A', is approximated by a log normal distribution calculated from the combinations of Birth Cohorts (c) and Education Cohorts (e). Mathematically, this is represented as: 
+
+$$A_{c,e} \sim \text{LN}(\hat{\mu}_{c,e}, \hat{\sigma}^2_{c,e})$$
+
+Where the mean and variance are taken from the actual birth/education groups. Individuals from this Non-Truncated group are then given a random draw from the distribution to decide at what age they are allocated a first child.
+
+As for the younger, Truncated group, they modify the allocation by drawing at random from 
+
+$$A_{c,e} \sim \text{LN}(\tilde{\mu}_{c,e}, \hat{\sigma}^2_{c,e})$$
+where the mean is now a predicted average that is born from a continuing trend from the older cohorts. Said differently: the authors allow the pattern that pervades through the older cohorts (such as, perhaps, people now become parents later in life) to continue to an "upward linear drift" (while holding variance constant). Pretty smart stuff.
+
+Finally, they are able to carry out event studies that compare a treatment group (those who have their first child between 1985–2003 and are observed in a 15-year window around the event) to a control group (those who never have children, but have been assigned a placebo birth between 1985–2003 and are observed in a 15-year window around the event). 
+
+The impact of children can be estimated as a difference-in- differences, i.e.
+
+Thus, a difference-in-differences yields an estimate of the impact of children via: 
+
+$$E[Y_{i,t>0} - Y_{i,t<0} | k_{iT} > 0] - E[Y_{i,t>0} - Y_{i,t<0} | k_{iT} = 0]$$
+Said in plain 'ol english, the above equation says:
+
+[The expected value of (Earnings post-birth) minus (Earnings pre-birth) for those who had at least one child] minus [The expected value of (Earnings post-birth) minus (Earnings pre-birth) for those who had no children throughout their lifetime but have been assigned a placebo]
 
 
 
 
-
-```{math}
-
-
-
-
-\begin{equation}
-Y_{\text{gist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{ageis}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}} \tag{1}
-\end{equation}
-
-
-  
-  
-  
-  
-  
-
-### Three, contemplaiting the data generation process
-Draw out the DAG that you consider best explains the data generation process. 
-
-### Fourth, Identification strategy!
-Confounders? Colliders? Mediators? What are we controlling for or not controlling for? 
-
-
-# Fourth continued, Effect identification strategy!
-Fixed effects? Matching? Propecity scores? Diff-in-Diff? Wait it was already randomized we're all good? 
-ATE? CATE? ITE?
-
-
-
-# Evaluate
-## How can we improve the research? 
-## Does it make sense how they did it?
-
-
-
-
-
-## Ok let's give it a go
-
-**Step 1**
-
-Estimand. The effect of `treatment` on `outcome`. 
-**Step 2**
-Data. Our avbailable variables are `gre`,`gpa`, `camp`, and `grade`. 
-
-**Step 3: DAG**
-
-We'll think about a DAG with just four nodes. 
-
-```{r}
-language_camp_dag <- dagify(grade ~ camp + gpa + gre,
-                        camp ~ gpa + gre,
-                        gre ~ gpa,
-                        outcome = "grade",
-                        exposure = "camp",
-                        coords = list(x = c(camp = 1, gpa = 2, gre = 3, grade = 4),
-                                      y = c(camp = 1, gpa = 2, gre = 2, grade = 1)))
-
-ggdag_status(language_camp_dag) +
-  theme_dag() +
-  guides(color = "none")  # Turn off legend
-```
-
-**Part 4**
-
-Students' GRE scores and undergraduate GPAs confound both the choice to enroll in the camp and final class grades. Additionally, undergraduate degrees help cause GRE scores.
-
-*We will generate syntetic data for this example*
-
-```{r}
-
-library(scales)
-
-# 1. GPA is associated with GRE scores
-# 2. Camp (binary) is associated with undergraduate GPA and GRE scores. Calculate a camp score and then a camp binary variable from it. 
-# 3. Final grade is caused by language camp, undergraduate GPA, and GRE scores
-
-gpa <- rnorm(100, mean = 2.5,sd = 1.5)
-e_gre <- rnorm(100, mean = 5, sd = 5)
-gre <- 140 + gpa*10 + e_gre
-gre_r<-rescale(gre, to = c(100, 170))
-
-e_camp_score <- rnorm(100, mean= 50, sd= 20)
-camp_score <- e_camp_score + 5*gpa + gre_r/5
-camp_score_r <- rescale(camp_score, to = c(0, 100))
-
-```
-
-**More part 4: Specify how these nodes are measured**
-
-See if you can find the effect. Run two models:
-
-- `grade ~ camp`: This is the naive, unadjusted, correlation-is-not-causation estimate. It's wrong.
-
-- `grade ~ camp + gpa + gre`: This is the adjusted estimate. 
-
-(Also adjust for GPA and GRE with inverse probability weighting to see if the ATE for `camp` still holds. This is entirely optional.)
-
-```{r}
-# Specify the models 
-
-# lm( ~ )
-
-```
-
-ATE = 
-
-**Part 5**
-
-Evaluation
