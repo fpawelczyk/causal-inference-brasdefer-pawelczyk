@@ -16,6 +16,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dagitty)
 library(ggdag)
 library(ggplot2)
+library(cowplot)
+library(knitr)
 ```
 
 # Research project
@@ -28,6 +30,7 @@ The authors try to contribute to the broad litature of _gender ineqality_. The a
 
 We present the baseline DAG in Figure X where the estimand is shown in the most simplest way.
 However, the authors admit that earning penalties can come from three margins, nameley: the extensive margin of labor supply (employment), the intensive margin of labor supply (hours worked) and finally the wage rate (denoted by _w_). We include this into a new DAG (Figure X) to make clear that that the earnings consist of different parts.
+\@ref(fig:dag_plot)
 
 ```{r dag_plot, fig.cap="Directed Acyclic Graph (DAG) of the causal relationships.", fig.cap.short="dag_plot"}
 # The estimand as a DAG
@@ -44,28 +47,125 @@ ggdag_status(estimand_dag) +
 
 ```{r}
 # Define the DAG
+# Defining abbreviations for our variables
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# Emp: Employment (mediator variable, representing employment status)
+# HW: Hours Worked (mediator variable, representing hours worked)
+# W: Wage (mediator variable, representing wage)
+
 dag <- dagitty( 'dag {
-  "Birth" [exposure,pos="0,0"]
-  "Earnings" [outcome,pos="2,0"]
-  "Extensive" [mediator,pos="1,1"]
-  "Intensive" [mediator,pos="1,0"]
-  "w" [mediator,pos="1,-1"]
-  "Birth" -> "Extensive" 
-  "Birth" -> "Intensive"
-  "Birth" -> "w"
-  "Extensive" -> "Earnings"
-  "Intensive" -> "Earnings"
-  "w" -> "Earnings"
+  "FC" [exposure,pos="0,0"]
+  "E" [outcome,pos="2,0"]
+  "Emp" [mediator,pos="1,1"]
+  "HW" [mediator,pos="1,0"]
+  "W" [mediator,pos="1,-1"]
+  "FC" -> "Emp" 
+  "FC" -> "HW"
+  "FC" -> "W"
+  "Emp" -> "E"
+  "HW" -> "E"
+  "W" -> "E"
 }' )
 
 # Print the DAG
 ggdag_status(dag) +
   theme_dag() +
-  guides(color = "none")
+  guides(color = "none")  # Suppress the legend
+
+
+```
+```{r}
+# Define the DAG
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# LS: Labor Supply (mediator variable, representing the combined effect of employment status, hours worked, and wage)
+# LCT: Life-Cycle Trends (confounder, representing trends across an individual's life cycle)
+# TT: Time Trends (confounder, representing broader time-based trends)
+
+dag <- dagitty( 'dag {
+  "FC" [exposure,pos="1,1"]
+  "E" [outcome,pos="3,1"]
+  "LS" [mediator,pos="2,1"]
+  "LCT" [pos="2,3"]
+  "TT" [pos="2,0"]
+  "LCT" -> "FC" 
+  "LCT" -> "LS"
+  "LCT" -> "E"
+  "TT" -> "FC"
+  "TT" -> "LS"
+  "TT" -> "E"
+  "FC" -> "LS"
+  "LS" -> "E"
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")  # Suppress the legend
+
+
+```
+
+
+```{r}
+# Define the DAG
+# Defining abbreviations for our variables
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# Emp: Employment (mediator variable, representing employment status)
+# HW: Hours Worked (mediator variable, representing hours worked)
+# W: Wage (mediator variable, representing wage)
+
+dag <- dagitty( 'dag {
+  "FC" [exposure,pos="0,0"]
+  "E" [outcome,pos="2,0"]
+  "Emp" [mediator,pos="1,1"]
+  "HW" [mediator,pos="1,0"]
+  "W" [mediator,pos="1,-1"]
+  "FC" -> "Emp" 
+  "FC" -> "HW"
+  "FC" -> "W"
+  "Emp" -> "E"
+  "HW" -> "E"
+  "W" -> "E"
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")  # Suppress the legend
+
+
 ```
 
 
 
+```{r dag5, fig.cap= "This is DAG 5", out.width= "100%", fig.align='center'}
+# Define the DAG
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# LS: Labor Supply (mediator variable, representing the combined effect of employment status, hours worked, and wage)
+# LCT: Life-Cycle Trends (confounder, representing trends across an individual's life cycle)
+# TT: Time Trends (confounder, representing broader time-based trends)
+
+dag <- dagitty( 'dag {
+  "FC" [exposure,pos="1,1"]
+  "E" [outcome,pos="3,1"]
+  "LS" [mediator,pos="2,1"]
+  "LCT" [pos="2,3"]
+  "TT" [pos="2,0"]
+  "FC" -> "LS"
+  "LS" -> "E"
+
+}' )
+
+# Print the DAG
+ggdag_status(dag) +
+  theme_dag() +
+  guides(color = "none")  # Suppress the legend
+
+```
 
 <!--The main outcome variable considered in this study is gross labor earnings. The authors convert the estimated effects into percentages to measure the child penalty experienced by women compared to men due to children.
 
@@ -78,29 +178,45 @@ We will use the term _child penalty_ throughout the report which is a common ter
 # First, what is the estimand? 
 <!--Have a clear idea of what it is that we want to measure.-->
 The estimand: Impact of children on the earnings of women relative to men.
+Then let's ref this shit `\ref(fig:dag5)`
+
+
 
 ```{r}
+
+
+
 # Define the DAG
-dag1 <- dagitty( 'dag {
-  "Birth" [exposure,pos="0,0"]
-  "Earnings" [outcome,pos="2,0"]
-  "Extensive" [mediator,pos="1,1"]
-  "Intensive" [mediator,pos="1,0"]
-  "w" [mediator,pos="1,-1"]
-  "Transfers/Benefits" [mediator,pos="1,-2"]
-  "Birth" -> "Extensive" 
-  "Birth" -> "Intensive"
-  "Birth" -> "w"
-  "Birth" -> "Transfers/Benefits"
-  "Extensive" -> "Earnings"
-  "Intensive" -> "Earnings"
-  "w" -> "Earnings"
-  "Transfers/Benefits" -> "Earnings"
+# Defining abbreviations for our variables
+# FC: First Child (exposure variable, representing the birth of the first child)
+# E: Earnings (outcome variable, representing labor market outcomes)
+# Emp: Employment (mediator variable, representing employment status)
+# HW: Hours Worked (mediator variable, representing hours worked)
+# W: Wage (mediator variable, representing wage)
+# EB: Employer Benefits
+
+dag <- dagitty( 'dag {
+  "FC" [exposure,pos="0,0"]
+  "E" [outcome,pos="2,0"]
+  "Emp" [mediator,pos="1,1"]
+  "HW" [mediator,pos="1,0"]
+  "W" [mediator,pos="1,-1"]
+  "EB" [mediator, pos="1,-2"]
+  "FC" -> "Emp" 
+  "FC" -> "HW"
+  "FC" -> "W"
+  "FC" -> "EB"
+  "Emp" -> "E"
+  "HW" -> "E"
+  "W" -> "E"
+  "EB" -> "E"
 }' )
+
 # Print the DAG
-ggdag_status(dag1) +
+ggdag_status(dag) +
   theme_dag() +
-  guides(color = "none")
+  guides(color = "none")  # Suppress the legend
+
 ```
 $$Y^{g}_{\text{ist}} = \sum_{j \neq -1} \alpha^{g}_{j} \cdot I[j = t] + \sum_k \beta^{g}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{g}_{y} \cdot I[y = s] + \nu^{g}_{\text{ist}}
 $$
@@ -146,9 +262,65 @@ The counterfactual outcome, denoted $\tilde{Y}^w_{istt'}$, is calculated excludi
 
 The findings suggest that the event study and IV estimates align closely, indicating robustness in their empirical approach. The short-run effect of the third child is similar to that of the first, showing an earnings reduction of 20-30%. However, the long-run effect of a third child is about 5%, lower than the long-run effect of the first child for those who only have one child, suggesting a diminishing marginal effect with the addition of more children.
 
+```{r}
+# Define the DAG
+# Define a simple DAG
+dag_text <- '
+dag {
+FirstChild -> LaborMarketOutcome
+SecondChild -> LaborMarketOutcome
+ThirdChild -> LaborMarketOutcome
+SexComposition -> ThirdChild
+TimeTrends -> LaborMarketOutcome
+LifeCycleTrends -> LaborMarketOutcome
+}'
+
+# Parse the DAG
+#dag2 <- dagitty(dag_text)
+
+# Plot the DAG
+#plot(dag2)
+# Print the DAG
+#ggdag_status(dag2) +
+ # theme_dag() +
+ # guides(color = "none")
+
+```
+
+```{r}
 
 
 
+# Define the DAG with abbreviations
+third_child_dag <- dagify(E ~ T1 + T2 + T3 + TT + LC,
+                          T3 ~ SC + T1 + T2,
+                          T2 ~ T1,
+                          T1 ~ TT + LC,
+                          labels = c("E" = "LaborMarketOutcome",
+                                     "T1" = "FirstChild",
+                                     "T2" = "SecondChild",
+                                     "T3" = "ThirdChild",
+                                     "TT" = "TimeTrends",
+                                     "LC" = "LifeCycleTrends",
+                                     "SC" = "SexComposition"),
+                          exposure = "T3",
+                          outcome = "E",
+                          coords = list(x = c(T1 = 2, T2 = 3, T3 = 4, SC = 3, TT = 1, LC = 1, E = 5),
+                                        y = c(T1 = 2, T2 = 2, T3 = 2, SC = 3, TT = 3, LC = 1, E = 2)))
+
+# Draw the DAG
+dag_plot <- ggdag_status(third_child_dag) +
+  theme_dag() +
+  guides(color = "none")  # Turn off legend
+
+# Add a title and caption
+dag_plot +
+  ggtitle("Directed Acyclic Graph (DAG) for the Third Child Study") +
+  labs(caption = "Note: E - LaborMarketOutcome, T1 - FirstChild, T2 - SecondChild, T3 - ThirdChild, SC - SexComposition, TT - TimeTrends, LC - LifeCycleTrends")
+
+
+
+```
 
 
 
