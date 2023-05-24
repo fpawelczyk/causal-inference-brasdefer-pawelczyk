@@ -427,16 +427,16 @@ ggdag_status(dag) +
 ```
 
 
-## Causal Effect vs Causal Mechanism
+## Causal Effect vs Causal Mechanism: Choices, Policies, Culture
 While the authors deliver rather strong evidence on the existence of a causal effect, the underlying mechanism is still unclear. The name itself, "child *penalty*" suggests punishment towards mothers and reduces the earnings drop to exactly this: a financial drop. Butm what if mothers decide to take jobs with more flexibility in order to raise their children? This would increase their net utility even if the wage is lower. To better understand the mechanism it would be good to extend the research here and see how women navigate the employment landscape after bearing children. Is it towards a family-friendly sector with a lower wage, or is the industry from pre-event maintained but simply with a lower (pre-inflation) wage?? 
 
-One explaination for the differences in the penalties could have to do with government policies. While numerous studies have been conducted to evaluate the influence of public policies, such as taxes, transfers, and family-focused policies like parental leave and child care provisions, on gender gaps and female labor supply, these policies do not adequately explain the "child penalties" experienced by mothers in the workforce.
+Another interesting critique to explore is that of government policies. One explanation for the differences in the penalties could have to do with government policies. While numerous studies have been conducted to evaluate the effect on gender gaps and female labor supply by public policies such as taxes, transfers, parental leave, and child care provisions, these policies do not adequately explain the "child penalties" experienced by mothers in the workforce.
 
-Another pontentially fruitful approach to explain this phenomen is to take a deeper look into gender-norms in given societies. Thi...
+As the authors hint towards in the paper, another potentially fruitful area to research would be a look into gender-norms and broader cultural differences across given societies, as these are far more difficult to capture that an explicit government policy, but are arguably more influential in determining te magnitude of a "child penalty".
 
-## Authors do not control for having only one child
 
-The author's analysis does not control for those parents that only have one child. As a result, the long-term child penalties that we observe include the impacts of having additional children, and therefore, are influences by total fertility. To overcome this short-term we would suggest to run an additional model with a `only-one-child` variable.
+## No Controls for # of children > 1
+As we saw multiple times, the authors' analysis does not control for those parents that only have one child, instead providing only the lower bound in an inequality. As a result, the long-term child penalties that we observe include the impacts of having additional children, and therefore, are influenced by total fertility. To overcome this in the short-term, we would suggest to run an additional model with a `only-one-child` variable.
 
 
 
