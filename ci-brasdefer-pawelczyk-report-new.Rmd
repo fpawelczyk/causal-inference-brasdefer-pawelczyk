@@ -21,6 +21,9 @@ library(knitr)
 ```
 
 # Research project
+According to the DAG shown in Figure \@ref(fig:dag_plot), there is a causal relationship between the variable "birth_having_child" and "earnings."
+\@ref(tab:dag_plot)
+
 
 This paper focuses on the impact of children on the labor gross earnings of mothers and fathers (the estimand). More precisely the paper investigates whether the "child penalty" that refers to the negative impact or disadvantage experienced by individuals, typically women, in their earnings. It represents the gap in earnings between individuals with children and those without children.
 
@@ -32,7 +35,7 @@ We present the baseline DAG in Figure X where the estimand is shown in the most 
 However, the authors admit that earning penalties can come from three margins, nameley: the extensive margin of labor supply (employment), the intensive margin of labor supply (hours worked) and finally the wage rate (denoted by _w_). We include this into a new DAG (Figure X) to make clear that that the earnings consist of different parts.
 \@ref(fig:dag_plot)
 
-```{r dag_plot, fig.cap="Directed Acyclic Graph (DAG) of the causal relationships.", fig.cap.short="dag_plot"}
+```{r dag_plot}
 # The estimand as a DAG
 estimand_dag <- dagify(earnings ~ birth_having_child,
                         outcome = "earnings",
