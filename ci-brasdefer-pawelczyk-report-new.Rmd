@@ -25,9 +25,9 @@ According to the DAG shown in Figure \@ref(fig:dag_plot), there is a causal rela
 \@ref(tab:dag_plot)
 
 
-This paper focuses on the impact of children on the labor gross earnings of mothers and fathers (the estimand). More precisely the paper investigates whether the "child penalty" that refers to the negative impact or disadvantage experienced by individuals, typically women, in their earnings. It represents the gap in earnings between individuals with children and those without children.
+This paper meticulously examines the influence of having children on the gross labor earnings of both mothers and fathers (the estimand). Specifically, it delves into the _child penalty_ - a phenomenon referring to the potential decrease in earnings experienced by individuals, particularly women, upon becoming parents. This 'penalty' essentially represents the earnings disparity between those with children and those without.
 
-The authors try to contribute to the broad litature of _gender ineqality_. The authors utilize _event studies_ centered around the birth of the first child and employ panel data with information on labor market outcomes and children.
+The authors aim to contribute to the extensive literature on gender inequality by applying an event study methodology, with the birth of the first child serving as the central event. Utilizing a rich panel dataset that provides information on labor market outcomes and children, the authors navigate through the complex dynamics of parenthood and earnings, aiming to shed light on how gender inequality in earnings might be perpetuated by the advent of parenthood.
 
 # DAG and extension
 
