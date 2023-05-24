@@ -329,7 +329,7 @@ To facilitate a valid comparison, the authors modify their event study model as 
 $$Y^{}_{\text{istt'}} = \sum_{j \neq -1} \alpha^{}_{j} \cdot I[j = t] + \sum_k \beta^{}_{k} \cdot I[k = \text{age}_{is}] + \sum_y \gamma^{}_{y} \cdot I[y = s] + \sum_{n \neq -1} \delta^{}_{n} \cdot I[j = t'] + \nu^{}_{\text{istt'}}
 $$
 
-In this model, t' represents the event time with respect to the third child. The new term $\sum \delta_n · I[n = t']$ introduces event time dummies for the birth of the third child. The authors also keep the event time dummies for the first child, as previous childbearing dynamics may impact the effect of the third child.
+In this model, t' represents the event time with respect to the third child. The new term $\sum \delta_n * I[n = t']$ introduces event time dummies for the birth of the third child. The authors also keep the event time dummies for the first child, as previous childbearing dynamics may impact the effect of the third child.
 
 The IV specification is identical, except it includes an additional instrumenting strategy which instruments the event time dummies around the third child birth using the sex mix of the first two children:
 

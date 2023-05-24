@@ -1,8 +1,8 @@
 ---
 title: "Causal Inference Report: Review on Child Penalties Across Countries: Evidence and Explanations"
 author: 
-  - Juan Pablo Brasdefer 
-  - Fabian Pawelczyk
+  - Juan Pablo Brasdefer (225936)
+  - Fabian Pawelczyk (226921)
 date: "`r Sys.Date()`" 
 output: 
   pdf_document:
@@ -226,7 +226,7 @@ Where the alpha coefficients correspond to the coefficients of the baseline-men 
 Beyond the baseline model, the authors do the responsible thing and explore the degree to which their study and assumptions are causally correct. They begin with establishing a conceptual framework, which, parallel to the causal relationships outlined in the DAGs above, is a more general view of how earnings fluctuations are constructed.
 
 
-They beging this framework by establishing some precision around the idea of the 'event' and how it relates to the total number of children that an individual will have over their lifetime. The authors assign a variable that corresponds to the number of children 'k' for individual _i_. This _ki_, is named the "anticipated lifetime fertility path" (ALFP) for one person, and is a set of values beginning with 0 and ending with the total number _kiT_ at the end of a person's life _'T'_, where the value of _kit_ at any point _t_ is the number of children of the individual at that time.
+They beging this framework by establishing some precision around the idea of the 'event' and how it relates to the total number of children that an individual will have over their lifetime. The authors assign a variable that corresponds to the number of children _k_ for individual _i_. This _ki_, is named the "anticipated lifetime fertility path" (ALFP) for one person, and is a set of values beginning with 0 and ending with the total number _kiT_ at the end of a person's life _'T'_, where the value of _kit_ at any point _t_ is the number of children of the individual at that time.
 
 $$ k_{i} = (0, k_{it}, ...k_{iT})$$
 
@@ -423,11 +423,11 @@ ggdag_status(dag) +
 
 
 ## Causal Effect vs Causal Mechanism: Choices, Policies, Culture
-While the authors deliver rather strong evidence on the existence of a causal effect, the underlying mechanism is still unclear. The name itself, "child *penalty*" suggests punishment towards mothers and reduces the earnings drop to exactly this: a financial drop. Butm what if mothers decide to take jobs with more flexibility in order to raise their children? This would increase their net utility even if the wage is lower. To better understand the mechanism it would be good to extend the research here and see how women navigate the employment landscape after bearing children. Is it towards a family-friendly sector with a lower wage, or is the industry from pre-event maintained but simply with a lower (pre-inflation) wage? 
+While the authors deliver rather strong evidence on the existence of a causal effect, the underlying mechanism is still unclear. The name itself, "child *penalty*" suggests punishment towards mothers and reduces the earnings drop to exactly this: a financial drop. But what if mothers decide to take jobs with more flexibility in order to raise their children? This would increase their net utility even if the wage is lower. To better understand the mechanism it would be good to extend the research here and see how women navigate the employment landscape after bearing children. Is it towards a family-friendly sector with a lower wage, or is the industry from pre-event maintained but simply with a lower (pre-inflation) wage? 
 
 Another interesting critique to explore is that of government policies. One explanation for the differences in the penalties could have to do with government policies. While numerous studies have been conducted to evaluate the effect on gender gaps and female labor supply by public policies such as taxes, transfers, parental leave, and child care provisions, these policies do not adequately explain the "child penalties" experienced by mothers in the workforce.
 
-As the authors hint towards in the paper, another potentially fruitful area to research would be a look into gender-norms and broader cultural differences across given societies, as these are far more difficult to capture that an explicit government policy, but are arguably more influential in determining te magnitude of a "child penalty".
+As the authors hint towards in the paper, another potentially fruitful area to research would be a look into gender-norms and broader cultural differences across given societies, as these are far more difficult to capture that an explicit government policy, but are arguably more influential in determining the magnitude of a "child penalty".
 
 
 ## Controls missing
